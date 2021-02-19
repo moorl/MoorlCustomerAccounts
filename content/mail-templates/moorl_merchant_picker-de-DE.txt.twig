@@ -1,0 +1,12 @@
+Hallo {{ merchant.company }},
+dies ist eine Kopie einer Kundenbestellung.
+
+Wunsch Abholdatum: {{ order.customFields.moorl_mf_desired_date }}
+Wunsch Abholzeit: {{ order.customFields.moorl_mf_desired_time }}
+Kommentar:
+{{ order.customFields.moorl_mf_comment }}
+
+{#
+    Copy the order confirmation template here.
+    Be aware - this template will be deleted by uninstalling the plugin.
+#}

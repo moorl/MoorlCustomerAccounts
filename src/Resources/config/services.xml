@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="MoorlCustomerAccounts\Core\Service\CustomerAccountService" public="true">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+            <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
+            <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+        </service>
+
+        <!-- Controller -->
+        <service id="MoorlCustomerAccounts\Controller\StorefrontController" public="true">
+            <argument type="service" id="MoorlCustomerAccounts\Core\Service\CustomerAccountService"/>
+            <argument type="service" id="Shopware\Storefront\Page\Account\Profile\AccountProfilePageLoader"/>
+        </service>
+
+        <!-- Subscriber -->
+        <service id="MoorlCustomerAccounts\Subscriber\StorefrontSubscriber">
+            <argument type="service" id="MoorlCustomerAccounts\Core\Service\CustomerAccountService"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <!-- Entity -->
+    </services>
+</container>
