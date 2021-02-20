@@ -5,21 +5,89 @@
     <input type="hidden" name="customerId" value="{{ customer.id }}">
 
     <div class="form-group">
-        <label class="" for="">{{ "account.personalMailLabel"|trans|sw_sanitize }}</label>
-        <input type="email" class="form-control" value="{{ customer.email }}">
+        <label class="" for="customerNumber">{{ "moorl-customer-accounts.customerNumber"|trans|sw_sanitize }}</label>
+        {% if customer %}
+            <input type="text" class="form-control" id="customerNumber" value="{{ customer.customerNumber }}" readonly>
+        {% else %}
+            <input type="text" class="form-control" name="customerNumber" id="customerNumber" value="{{ context.customer.customerNumber }}">
+        {% endif %}
     </div>
 
     <div class="form-group">
-        <label class="" for="">{{ "account.personalPasswordLabel"|trans|sw_sanitize }}</label>
+        <label class="" for="salutationId">{{ "account.personalSalutationLabel"|trans|sw_sanitize }}</label>
+        <select id="salutationId"
+                class="custom-select"
+                name="salutationId"
+                id="salutationId"
+                required="required">
+            {% for salutation in salutations %}
+                <option {% if salutation.id == customer.salutationId %}
+                    selected="selected"
+                {% endif %}
+                        value="{{ salutation.id }}">
+                    {{ salutation.translated.displayName }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label class="" for="firstName">{{ "account.personalFirstNameLabel"|trans|sw_sanitize }}</label>
+        <input type="text" class="form-control" name="firstName" id="firstName" value="{{ customer.firstName }}">
+    </div>
+
+    <div class="form-group">
+        <label class="" for="lastName">{{ "account.personalLastNameLabel"|trans|sw_sanitize }}</label>
+        <input type="text" class="form-control" name="lastName" id="lastName" value="{{ customer.lastName }}">
+    </div>
+
+    <div class="form-group">
+        <label class="" for="email">{{ "account.personalMailLabel"|trans|sw_sanitize }}</label>
+        <input type="email" class="form-control" name="email" id="email" value="{{ customer.email }}">
+    </div>
+
+    <div class="form-group">
+        <label class="" for="password">{{ "account.personalPasswordLabel"|trans|sw_sanitize }}</label>
         <div class="input-group">
-            <input type="password" class="form-control" value="">
-            <div class="input-group-append">
-                <button type="button"
-                        title="{{ "moorl-customer-accounts.sendNewPasswordDescription"|trans|sw_sanitize }}"
-                        class="btn btn-primary">
+            <input type="password" class="form-control" name="password" id="password" value="">
+            {% if customer %}
+                <div class="input-group-append">
+                    <button type="button"
+                            title="{{ "moorl-customer-accounts.sendNewPasswordDescription"|trans|sw_sanitize }}"
+                            class="btn btn-primary">
+                        {{ "moorl-customer-accounts.sendNewPassword"|trans|sw_sanitize }}
+                    </button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if not customer %}
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox"
+                       class="custom-control-input"
+                       id="sendNewPassword"
+                       name="sendNewPassword"
+                       value="1">
+                <label class="custom-control-label" for="sendNewPassword">
                     {{ "moorl-customer-accounts.sendNewPassword"|trans|sw_sanitize }}
-                </button>
+                </label>
             </div>
+        </div>
+    {% endif %}
+
+    <div class="form-group">
+        <div class="custom-control custom-checkbox">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   id="active"
+                   name="active"
+                   value="true"
+                   {% if customer.active %}checked{% endif %}>
+            <label class="custom-control-label" for="active">
+                {{ "moorl-customer-accounts.active"|trans|sw_sanitize }}
+            </label>
         </div>
     </div>
 

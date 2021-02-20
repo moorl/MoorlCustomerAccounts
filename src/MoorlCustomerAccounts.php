@@ -8,6 +8,7 @@ use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
+use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class MoorlCustomerAccounts extends Plugin
 {
@@ -16,6 +17,40 @@ class MoorlCustomerAccounts extends Plugin
         /* @var $foundation PluginFoundation */
         $foundation = $this->container->get(PluginFoundation::class);
         $foundation->setContext($context);
+
+        $data = [
+            [
+                'name' => 'moorl_ca',
+                'config' => [
+                    'label' => [
+                        'en-GB' => 'Customer accounts',
+                        'de-DE' => 'Kunden Accounts',
+                    ],
+                ],
+                'relations' => [
+                    ['entityName' => 'customer'],
+                    ['entityName' => 'order']
+                ],
+                'customFields' => [
+                    [
+                        'name' => 'moorl_ca_parent_id',
+                        'type' => CustomFieldTypes::JSON,
+                        'config' => [
+                            'label' => [
+                                'en-GB' => 'Main customer',
+                                'de-DE' => 'Hauptkunde',
+                            ],
+                            'componentName' => "sw-entity-single-select",
+                            'entity' => 'customer',
+                            'customFieldType' => CustomFieldTypes::JSON,
+                            'labelProperty' => "email"
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $foundation->updateCustomFields($data, 'moorl_ca');
 
         if ($justDelete) {
             return;
@@ -26,7 +61,7 @@ class MoorlCustomerAccounts extends Plugin
     {
         parent::activate($activateContext);
 
-        //$this->refreshPluginData($activateContext->getContext());
+        $this->refreshPluginData($activateContext->getContext());
     }
 
     public function install(InstallContext $context): void

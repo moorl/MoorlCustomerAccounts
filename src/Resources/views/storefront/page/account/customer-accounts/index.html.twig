@@ -19,15 +19,60 @@
 
         {% block page_account_customer_accounts_main %}
             {% block page_account_customer_accounts_create %}
-                <button type="button"
-                        class="btn btn-primary btn-block"
-                        data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit') }}">
-                    {{ "moorl-customer-accounts.createCustomer"|trans|sw_sanitize }}
-                </button>
+                <div class="form-group">
+                    <button type="button"
+                            class="btn btn-primary btn-block"
+                            data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit') }}">
+                        {{ "moorl-customer-accounts.createCustomer"|trans|sw_sanitize }}
+                    </button>
+                </div>
             {% endblock %}
 
             {% block page_account_customer_accounts_list %}
+                <p>
+                    {{ "moorl-customer-accounts.customerAccounts"|trans|sw_sanitize }}
+                </p>
 
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">{{ "moorl-customer-accounts.active"|trans|sw_sanitize }}</th>
+                            <th scope="col">{{ "moorl-customer-accounts.customerNumber"|trans|sw_sanitize }}</th>
+                            <th scope="col">{{ "moorl-customer-accounts.email"|trans|sw_sanitize }}</th>
+                            <th scope="col">{{ "moorl-customer-accounts.customerName"|trans|sw_sanitize }}</th>
+                            <th scope="col">{{ "moorl-customer-accounts.options"|trans|sw_sanitize }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in customers %}
+                            <tr>
+                                <td>
+                                    {% if customer.active %}
+                                        {% sw_icon 'checkmark' %}
+                                    {% else %}
+                                        {% sw_icon 'x' %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {{ customer.customerNumber }}
+                                </td>
+                                <td>
+                                    {{ customer.email }}
+                                </td>
+                                <td>
+                                    {{ customer.firstName }} {{ customer.lastname }}
+                                </td>
+                                <td class="text-right">
+                                    <button type="button"
+                                            class="btn btn-sm btn-light"
+                                            data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit',{ 'customerId': customer.id}) }}">
+                                        {{ "moorl-customer-accounts.editCustomer"|trans|sw_sanitize }}
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             {% endblock %}
         {% endblock %}
     </div>

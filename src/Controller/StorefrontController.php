@@ -41,10 +41,17 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
     {
         $this->denyAccessUnlessLoggedIn();
 
+        $this->customerAccountService->setSalesChannelContext($context);
+
+        if ($request->request->get('salutationId')) {
+            $this->customerAccountService->addCustomer($request->request->all());
+        }
+
         $page = $this->profilePageLoader->load($request, $context);
 
         return $this->renderStorefront('@Storefront/storefront/page/account/customer-accounts/index.html.twig', [
             'page' => $page,
+            'customers' => $this->customerAccountService->getCustomers()
         ]);
     }
 
@@ -59,7 +66,10 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
         $customer = $this->customerAccountService->getCustomer($customerId);
 
-        $body = $this->renderView('plugin/moorl-customer-accounts/edit-customer.html.twig', ['customer' => $customer]);
+        $body = $this->renderView('plugin/moorl-customer-accounts/edit-customer.html.twig', [
+            'customer' => $customer,
+            'salutations' => $this->customerAccountService->getSalutations()
+        ]);
 
         return $this->renderStorefront('plugin/moorl-foundation/modal.html.twig', [
             'modal' => [

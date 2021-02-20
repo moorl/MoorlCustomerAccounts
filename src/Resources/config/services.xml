@@ -8,6 +8,7 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
             <argument type="service" id="Shopware\Core\System\SystemConfig\SystemConfigService"/>
             <argument type="service" id="Symfony\Component\HttpFoundation\RequestStack"/>
+            <argument type="service" id="Shopware\Core\System\Salutation\SalesChannel\SalutationRoute"/>
         </service>
 
         <!-- Controller -->
