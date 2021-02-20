@@ -170,13 +170,13 @@ class CustomerAccountService
             $results = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->count();
 
             if ($results > 0) {
-                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorEmailInUse', ['email' => $data['email']]));
+                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorEmailInUse', ['%email%' => $data['email']]));
             }
 
             $parentCustomerNumber = $this->getSalesChannelContext()->getCustomer()->getCustomerNumber();
 
             if (strpos($data['customerNumber'], $parentCustomerNumber) !== 0) {
-                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorCustomerNumber', ['customerNumber' => $parentCustomerNumber]));
+                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorCustomerNumber', ['%customerNumber%' => $parentCustomerNumber]));
             }
         } else {
             unset($data['customerNumber']);
