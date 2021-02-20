@@ -2,7 +2,7 @@
 
 {% block page_account_sidebar_link_profile %}
     {# Don't allow to edit the parent account #}
-    {% if not context.customer.extensions.MoorlCustomerAccounts %}
+    {% if context.customer.extensions.CustomerAccount.children %}
         {{ parent() }}
 
         {% block page_account_sidebar_menu_customer_accounts %}

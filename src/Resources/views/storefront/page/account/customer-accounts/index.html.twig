@@ -40,13 +40,13 @@
                             <th scope="col">{{ "moorl-customer-accounts.customerNumber"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.email"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.customerName"|trans|sw_sanitize }}</th>
-                            <th scope="col">{{ "moorl-customer-accounts.options"|trans|sw_sanitize }}</th>
+                            <th class="text-right" scope="col">{{ "moorl-customer-accounts.options"|trans|sw_sanitize }}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for customer in customers %}
                             <tr>
-                                <td>
+                                <td class="text-center">
                                     {% if customer.active %}
                                         {% sw_icon 'checkmark' %}
                                     {% else %}

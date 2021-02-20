@@ -6,11 +6,11 @@ use Composer\IO\NullIO;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\FetchMode;
 use Doctrine\DBAL\ParameterType;
+use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
 use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
 use Shopware\Core\Checkout\Customer\Event\CustomerLoginEvent;
 use Shopware\Core\Framework\Routing\Event\SalesChannelContextResolvedEvent;
-use Shopware\Core\Framework\Struct\ArrayStruct;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -52,21 +52,23 @@ class StorefrontSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $this->customerAccountService->setSalesChannelContext($event->getSalesChannelContext());
+
+        $customerAccount = new CustomerAccountStruct();
         $customFields = $customer->getCustomFields();
 
         if ($customFields && !empty($customFields['moorl_ca_parent_id'])) {
-            $customer->addExtension('MoorlCustomerAccounts', new ArrayStruct([
-                'customerId' => $customer->getId()
-            ]));
-
+            $customerAccount->setParent($this->customerAccountService->getCustomer($customFields['moorl_ca_parent_id'], false));
             $customer->setId($customFields['moorl_ca_parent_id']);
-
-            $this->customerAccountService->setSalesChannelContext($event->getSalesChannelContext());
+        } else {
+            $customerAccount->setChildren($this->customerAccountService->getCustomers());
         }
+
+        $customer->addExtension('CustomerAccount', $customerAccount);
     }
 
     public function onCustomerLogin(CustomerLoginEvent $event): void
     {
-        return;
+        // TODO: If parent removed, throw error
     }
 }

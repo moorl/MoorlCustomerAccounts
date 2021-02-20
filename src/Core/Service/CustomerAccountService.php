@@ -3,10 +3,12 @@
 namespace MoorlCustomerAccounts\Core\Service;
 
 use Doctrine\DBAL\Connection;
+use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Event\InitialPasswordEvent;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Framework\Adapter\Translation\Translator;
 use Shopware\Core\Framework\App\Validation\Error\MissingPermissionError;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
@@ -56,13 +58,18 @@ class CustomerAccountService
      * @var EventDispatcherInterface
      */
     private $eventDispatcher;
+    /*
+     * @var Translator
+     */
+    private $translator;
 
     public function __construct(
         DefinitionInstanceRegistry $definitionInstanceRegistry,
         SystemConfigService $systemConfigService,
         RequestStack $requestStack,
         AbstractSalutationRoute $salutationRoute,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        Translator $translator
     )
     {
         $this->definitionInstanceRegistry = $definitionInstanceRegistry;
@@ -70,46 +77,52 @@ class CustomerAccountService
         $this->requestStack = $requestStack;
         $this->salutationRoute = $salutationRoute;
         $this->eventDispatcher = $eventDispatcher;
+        $this->translator = $translator;
     }
 
     public function addCustomerIdToOrder(OrderEntity $order): void
     {
         $customer = $this->getSalesChannelContext()->getCustomer();
 
-        if ($customer->hasExtension('MoorlCustomerAccounts')) {
-            $repo = $this->definitionInstanceRegistry->getRepository('order');
+        if ($customer->hasExtension('CustomerAccount')) {
+            /* @var $customerAccountStruct CustomerAccountStruct */
+            $customerAccountStruct = $customer->getExtension('CustomerAccount');
 
-            /* @var $extension ArrayStruct */
-            $extension = $customer->getExtension('MoorlCustomerAccounts');
+            if ($customerAccountStruct->getParent()) {
+                $repo = $this->definitionInstanceRegistry->getRepository('order');
 
-            $customFields = $order->getCustomFields();
-            $customFields['moorl_ca_customer_id'] = $extension->get('customerId');
+                $customFields = $order->getCustomFields();
+                $customFields['moorl_ca_customer_id'] = $customerAccountStruct->getParent()->getId();
 
-            $repo->update([[
-                'id' => $order->getId(),
-                'customFields' => $customFields
-            ]], $this->getSalesChannelContext()->getContext());
+                $repo->update([[
+                    'id' => $order->getId(),
+                    'customFields' => $customFields
+                ]], $this->getSalesChannelContext()->getContext());
+            }
         }
     }
 
-    public function getCustomer(?string $customerId): ?CustomerEntity
+    public function getCustomer(?string $customerId, $isChild = true): ?CustomerEntity
     {
         if (!$customerId) {
             return null;
         }
 
+        $parentId = null;
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
-        $parentId = $this->getSalesChannelContext()->getCustomer()->getId();
 
         $criteria = new Criteria([$customerId]);
         $criteria->setLimit(1);
-        $criteria->addFilter(new EqualsFilter('customFields.moorl_ca_parent_id', $parentId));
+        if ($isChild) {
+            $parentId = $this->getSalesChannelContext()->getCustomer()->getId();
+            $criteria->addFilter(new EqualsFilter('customFields.moorl_ca_parent_id', $parentId));
+        }
 
         $customer = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->first();
 
         if (!$customer) {
             throw new MissingPermissionError([
-                'Customer '.$parentId.' has no permission to edit ' . $customerId
+                $this->translator->trans('moorl-customer-accounts.errorNoPermission', ['%parentId%' => $parentId, '%customerId%' => $customerId])
             ]);
         }
 
@@ -119,7 +132,16 @@ class CustomerAccountService
     public function getCustomers(): ?CustomerCollection
     {
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
-        $parentId = $this->getSalesChannelContext()->getCustomer()->getId();
+        $context = $this->getSalesChannelContext();
+        $customer = $context->getCustomer();
+        $parentId = $customer->getId();
+        $groupId = $customer->getGroupId();
+
+        $groupIds = $this->systemConfigService->get('MoorlCustomerAccounts.config.groupIds', $context->getSalesChannelId());
+
+        if (!$groupIds || !in_array($groupId, $groupIds)) {
+            return null;
+        }
 
         $criteria = new Criteria();
         $criteria->setLimit(500);
@@ -148,13 +170,13 @@ class CustomerAccountService
             $results = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->count();
 
             if ($results > 0) {
-                throw new \Exception('Customer E-mail already in use');
+                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorEmailInUse', ['email' => $data['email']]));
             }
 
             $parentCustomerNumber = $this->getSalesChannelContext()->getCustomer()->getCustomerNumber();
 
             if (strpos($data['customerNumber'], $parentCustomerNumber) !== 0) {
-                throw new \Exception('Customer number have to start with ' . $parentCustomerNumber);
+                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorCustomerNumber', ['customerNumber' => $parentCustomerNumber]));
             }
         } else {
             unset($data['customerNumber']);

@@ -1,7 +1,25 @@
 {% sw_extends '@Storefront/storefront/page/account/index.html.twig' %}
 
+{% block page_account_overview_welcome %}
+    {% if context.customer.extensions.CustomerAccount.parent %}
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: 'info',
+            content: 'moorl-customer-accounts.childAccountInfo'|trans({
+                '%email%': context.customer.extensions.CustomerAccount.parent.email
+            })
+        } %}
+    {% elseif context.customer.extensions.CustomerAccount.children %}
+        {% sw_include '@Storefront/storefront/utilities/alert.html.twig' with {
+            type: 'info',
+            content: 'moorl-customer-accounts.parentAccountInfo'|trans
+        } %}
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
+
 {% block page_account_overview_profile_actions %}
-    {% if not context.customer.extensions.MoorlCustomerAccounts %}
+    {% if context.customer.extensions.CustomerAccount.children %}
         {{ parent() }}
     {% endif %}
 {% endblock %}

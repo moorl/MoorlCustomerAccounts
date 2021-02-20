@@ -6,7 +6,7 @@
         <title lang="de-DE">Einstellungen</title>
 
         <component name="sw-entity-multi-id-select">
-            <name>customerGroups</name>
+            <name>groupIds</name>
             <entity>customer_group</entity>
             <label>Enable sub-cccounts for this customer groups.</label>
             <label lang="de-DE">Aktiviere Unter-Accounts für diese Kundengruppen.</label>
