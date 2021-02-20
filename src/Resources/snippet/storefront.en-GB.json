@@ -1,5 +1,11 @@
 {
     "moorl-customer-accounts": {
-        "customerAccounts": "Customer accounts"
+        "customerAccounts": "Customer accounts",
+        "createCustomer": "Create new customer",
+        "sendNewPassword": "Send new Password",
+        "sendNewPasswordDescription": "Send an initial password to this customer",
+        "customerAccountsWelcome": "Customer management",
+        "customerAccountsText": "Create and change your company's customers here",
+        "save": "Save"
     }
 }

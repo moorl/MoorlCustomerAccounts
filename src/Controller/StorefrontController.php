@@ -35,7 +35,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
     }
 
     /**
-     * @Route("/account/customer-accounts", name="moorl-customer-accounts.account.customer-accounts.page", methods={"GET"})
+     * @Route("/account/customer-accounts", name="moorl-customer-accounts.account.customer-accounts.page", methods={"GET","POST"})
      */
     public function profileCustomerAccounts(Request $request, SalesChannelContext $context): Response
     {
@@ -45,6 +45,28 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
         return $this->renderStorefront('@Storefront/storefront/page/account/customer-accounts/index.html.twig', [
             'page' => $page,
+        ]);
+    }
+
+    /**
+     * @Route("/account/edit/{customerId}", name="moorl-customer-accounts.account.customer-accounts.edit", methods={"GET"}, defaults={"customerId"=null,"XmlHttpRequest"=true})
+     */
+    public function editCustomerModal(?string $customerId, Request $request, SalesChannelContext $context): Response
+    {
+        $this->denyAccessUnlessLoggedIn();
+
+        $this->customerAccountService->setSalesChannelContext($context);
+
+        $customer = $this->customerAccountService->getCustomer($customerId);
+
+        $body = $this->renderView('plugin/moorl-customer-accounts/edit-customer.html.twig', ['customer' => $customer]);
+
+        return $this->renderStorefront('plugin/moorl-foundation/modal.html.twig', [
+            'modal' => [
+                'title' => $customer ? $customer->getEmail() : $this->trans('moorl-customer-accounts.createCustomer'),
+                'size' => 'md',
+                'body' => $body
+            ]
         ]);
     }
 }
