@@ -8,8 +8,10 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\App\Validation\Error\MissingPermissionError;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -101,6 +103,19 @@ class CustomerAccountService
     public function addCustomer(array $data): void
     {
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
+
+        if (empty($data['customerId'])) {
+            $criteria = new Criteria();
+            $criteria->addFilter(new EqualsFilter('customer.email', $data['email']));
+            $criteria->addFilter(new EqualsFilter('customer.guest', 0));
+
+            $results = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->count();
+
+            if ($results > 0) {
+                throw new \Exception('Customer E-mail already in use');
+            }
+        }
+
         $context = $this->getSalesChannelContext();
         $parent = $context->getCustomer();
 

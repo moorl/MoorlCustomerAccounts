@@ -44,7 +44,13 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
         $this->customerAccountService->setSalesChannelContext($context);
 
         if ($request->request->get('salutationId')) {
-            $this->customerAccountService->addCustomer($request->request->all());
+            try {
+                $this->customerAccountService->addCustomer($request->request->all());
+
+                $this->addFlash('success', $this->trans('moorl-customer-accounts.customerCreated'));
+            } catch (\Exception $exception) {
+                $this->addFlash('danger', $exception->getMessage());
+            }
         }
 
         $page = $this->profilePageLoader->load($request, $context);

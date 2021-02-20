@@ -12,6 +12,7 @@
         "customerName": "Name",
         "options": "Options",
         "editCustomer": "Edit",
-        "email": "E-mail"
+        "email": "E-mail",
+        "customerCreated": "Customer has been created"
     }
 }
