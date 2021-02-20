@@ -117,6 +117,10 @@ class CustomerAccountService
             ],
         ]);
 
+        if (empty($data['password'])) {
+            unset($data['password']);
+        }
+
         $repo->upsert([$data], $context->getContext());
     }
 
