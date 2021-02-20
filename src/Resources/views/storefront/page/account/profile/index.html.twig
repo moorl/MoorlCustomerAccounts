@@ -1,0 +1,7 @@
+{% sw_extends '@Storefront/storefront/page/account/profile/index.html.twig' %}
+
+{% block page_account_main_content %}
+    {% if not context.customer.extensions.MoorlCustomerAccounts %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}

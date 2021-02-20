@@ -1,15 +1,16 @@
 {% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
 
-{% block page_account_sidebar_menu_inner %}
-    {{ parent() }}
+{% block page_account_sidebar_link_profile %}
+    {# Don't allow to edit the parent account #}
+    {% if not context.customer.extensions.MoorlCustomerAccounts %}
+        {{ parent() }}
 
-    {% block page_account_sidebar_menu_customer_accounts %}
-        <a href="{{ path('moorl-customer-accounts.account.customer-accounts.page') }}"
-           title="{{ "moorl-customer-accounts.customerAccounts"|trans|striptags }}"
-           class="list-group-item list-group-item-action account-aside-item{% if controllerName is same as('Storefront') and controllerAction is same as('profileCustomerAccounts') %} is-active{% endif %}">
-            {{ "moorl-customer-accounts.customerAccounts"|trans }}
-        </a>
-    {% endblock %}
+        {% block page_account_sidebar_menu_customer_accounts %}
+            <a href="{{ path('moorl-customer-accounts.account.customer-accounts.page') }}"
+               title="{{ "moorl-customer-accounts.customerAccounts"|trans|striptags }}"
+               class="list-group-item list-group-item-action account-aside-item{% if controllerName is same as('Storefront') and controllerAction is same as('profileCustomerAccounts') %} is-active{% endif %}">
+                {{ "moorl-customer-accounts.customerAccounts"|trans }}
+            </a>
+        {% endblock %}
+    {% endif %}
 {% endblock %}
-
-
