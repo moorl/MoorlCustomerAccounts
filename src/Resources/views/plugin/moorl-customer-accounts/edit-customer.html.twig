@@ -9,7 +9,8 @@
         {% if customer %}
             <input type="text" class="form-control" id="customerNumber" value="{{ customer.customerNumber }}" readonly>
         {% else %}
-            <input type="text" class="form-control" name="customerNumber" id="customerNumber" value="{{ context.customer.customerNumber }}">
+            <input type="text" class="form-control" name="customerNumber" id="customerNumber" value="{{ context.customer.customerNumber }}-XXX">
+            <small>{{ "moorl-customer-accounts.customerNumberInfo"|trans({"customerNumber": context.customer.customerNumber}) }}</small>
         {% endif %}
     </div>
 
@@ -49,10 +50,15 @@
     <div class="form-group">
         <label class="" for="password">{{ "account.personalPasswordLabel"|trans|sw_sanitize }}</label>
         <div class="input-group">
-            <input type="password" class="form-control" name="password" id="password" value="">
+            <input type="password"
+                   class="form-control"
+                   name="password"
+                   id="password"
+                   placeholder="{{ "moorl-customer-accounts.passwordPlaceholder"|trans|sw_sanitize }}">
             {% if customer %}
                 <div class="input-group-append">
-                    <button type="button"
+                    <button name="action"
+                            value="newPassword"
                             title="{{ "moorl-customer-accounts.sendNewPasswordDescription"|trans|sw_sanitize }}"
                             class="btn btn-primary">
                         {{ "moorl-customer-accounts.sendNewPassword"|trans|sw_sanitize }}
@@ -91,8 +97,12 @@
         </div>
     </div>
 
-    <div class="text-right">
-        <button class="btn btn-primary">
+    <div class="d-flex justify-content-between">
+        <button class="btn btn-danger" name="action" value="remove">
+            {{ "moorl-customer-accounts.remove"|trans|sw_sanitize }}
+        </button>
+
+        <button class="btn btn-primary" name="action" value="edit">
             {{ "moorl-customer-accounts.save"|trans|sw_sanitize }}
         </button>
     </div>

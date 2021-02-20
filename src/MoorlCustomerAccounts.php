@@ -2,7 +2,9 @@
 
 namespace MoorlCustomerAccounts;
 
+use MoorlCustomerAccounts\Core\Event\InitialPasswordEvent;
 use MoorlFoundation\Core\PluginFoundation;
+use Shopware\Core\Content\MailTemplate\MailTemplateActions;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Plugin;
 use Shopware\Core\Framework\Plugin\Context\ActivateContext;
@@ -12,6 +14,9 @@ use Shopware\Core\System\CustomField\CustomFieldTypes;
 
 class MoorlCustomerAccounts extends Plugin
 {
+    public const EVENT_NAME = 'moorl_ca_initial_password.send';
+    public const TECHNICAL_NAME = 'moorl_ca_initial_password';
+
     private function refreshPluginData(Context $context, $justDelete = null): void
     {
         /* @var $foundation PluginFoundation */
@@ -45,6 +50,20 @@ class MoorlCustomerAccounts extends Plugin
                             'customFieldType' => CustomFieldTypes::JSON,
                             'labelProperty' => "email"
                         ]
+                    ],
+                    [
+                        'name' => 'moorl_ca_customer_id',
+                        'type' => CustomFieldTypes::JSON,
+                        'config' => [
+                            'label' => [
+                                'en-GB' => 'Customer',
+                                'de-DE' => 'Kunde',
+                            ],
+                            'componentName' => "sw-entity-single-select",
+                            'entity' => 'customer',
+                            'customFieldType' => CustomFieldTypes::JSON,
+                            'labelProperty' => "email"
+                        ]
                     ]
                 ]
             ]
@@ -52,9 +71,46 @@ class MoorlCustomerAccounts extends Plugin
 
         $foundation->updateCustomFields($data, 'moorl_ca');
 
+        $foundation->removeMailTemplates([
+            self::TECHNICAL_NAME
+        ], $justDelete);
+
+        $foundation->removeEventActions([
+            InitialPasswordEvent::EVENT_NAME
+        ]);
+
         if ($justDelete) {
             return;
         }
+
+        $data = [
+            [
+                'technical_name' => self::TECHNICAL_NAME,
+                'event_name' => InitialPasswordEvent::EVENT_NAME,
+                'action_name' => MailTemplateActions::MAIL_TEMPLATE_MAIL_SEND_ACTION,
+                'locale' => [
+                    'en-GB' => [
+                        'name' => 'Your access',
+                        'description' => 'Customer Accounts Initial Password',
+                        'content_html' => $this->getTemplateFile(self::TECHNICAL_NAME, 'en-GB', 'html'),
+                        'content_plain' => $this->getTemplateFile(self::TECHNICAL_NAME, 'en-GB', 'txt'),
+                    ],
+                    'de-DE' => [
+                        'name' => 'Dein Zugang',
+                        'description' => 'Kunden Accounts Initiales Passwort',
+                        'content_html' => $this->getTemplateFile(self::TECHNICAL_NAME, 'de-DE', 'html'),
+                        'content_plain' => $this->getTemplateFile(self::TECHNICAL_NAME, 'de-DE', 'txt'),
+                    ],
+                ],
+                'availableEntities' => [
+                    'salesChannel' => 'sales_channel',
+                    'customer' => 'customer',
+                    'parent' => 'customer'
+                ]
+            ]
+        ];
+
+        $foundation->addMailTemplates($data);
     }
 
     public function activate(ActivateContext $activateContext): void

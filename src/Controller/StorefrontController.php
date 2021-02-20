@@ -43,11 +43,20 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
         $this->customerAccountService->setSalesChannelContext($context);
 
-        if ($request->request->get('salutationId')) {
+        if ($action = $request->request->get('action')) {
             try {
-                $this->customerAccountService->addCustomer($request->request->all());
-
-                $this->addFlash('success', $this->trans('moorl-customer-accounts.customerCreated'));
+                if ($action == 'edit') {
+                    $this->customerAccountService->addCustomer($request->request->all());
+                    $this->addFlash('success', $this->trans('moorl-customer-accounts.customerCreated'));
+                } else if ($action == 'remove') {
+                    $this->customerAccountService->removeCustomer($request->request->all());
+                    $this->addFlash('success', $this->trans('moorl-customer-accounts.customerRemoved'));
+                } else if ($action == 'newPassword') {
+                    $this->customerAccountService->addCustomer($request->request->all());
+                    $this->addFlash('success', $this->trans('moorl-customer-accounts.newPasswordSent'));
+                } else {
+                    throw new \Exception('Something went wrong');
+                }
             } catch (\Exception $exception) {
                 $this->addFlash('danger', $exception->getMessage());
             }

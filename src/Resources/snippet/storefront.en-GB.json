@@ -13,6 +13,11 @@
         "options": "Options",
         "editCustomer": "Edit",
         "email": "E-mail",
-        "customerCreated": "Customer has been created"
+        "customerCreated": "Customer has been created",
+        "remove": "Remove",
+        "customerRemoved": "Customer has been removed",
+        "newPasswordSent": "Initial password has been send",
+        "passwordPlaceholder": "Leave empty to create a random password",
+        "customerNumberInfo": "Number have to start with your main customer number (customerNumber)"
     }
 }
