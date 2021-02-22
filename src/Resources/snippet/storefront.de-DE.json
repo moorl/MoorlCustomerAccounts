@@ -25,6 +25,7 @@
         "parentAccountInfo": "Die ist ein Hauptaccount, Sie können mehrere Unteraccounts erstellen",
         "childAccountInfo": "Dies ist ein Unteraccount von %email%",
         "lastLogin": "Letzer Login",
-        "notAllowed": "Diese Aktion ist nicht erlaubt"
+        "notAllowed": "Diese Aktion ist nicht erlaubt",
+        "orderCopy": "Sende Kopie von Bestellungen"
     }
 }

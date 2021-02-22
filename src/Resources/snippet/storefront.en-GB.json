@@ -25,6 +25,7 @@
         "parentAccountInfo": "This is a parent account, you can create multipe child accounts",
         "childAccountInfo": "This is a child account of %email%",
         "lastLogin": "Last login",
-        "notAllowed": "This action is not allowed"
+        "notAllowed": "This action is not allowed",
+        "orderCopy": "Send copy of orders"
     }
 }

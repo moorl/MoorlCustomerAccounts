@@ -165,6 +165,9 @@ class CustomerAccountService
     public function addCustomer(array $data): void
     {
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
+        $context = $this->getSalesChannelContext();
+        $parent = $context->getCustomer();
+
 
         if (empty($data['customerId'])) {
             $criteria = new Criteria();
@@ -178,11 +181,7 @@ class CustomerAccountService
                 throw new \Exception($this->translator->trans('moorl-customer-accounts.errorEmailInUse', ['%email%' => $data['email']]));
             }
 
-            $parentCustomerNumber = $this->getSalesChannelContext()->getCustomer()->getCustomerNumber();
-
-            if (strpos($data['customerNumber'], $parentCustomerNumber) !== 0) {
-                throw new \Exception($this->translator->trans('moorl-customer-accounts.errorCustomerNumber', ['%customerNumber%' => $parentCustomerNumber]));
-            }
+            $data['customerNumber'] = $parent->getCustomerNumber() . '-' . $data['customerNumber'];
         } else {
             unset($data['customerNumber']);
 
@@ -193,8 +192,6 @@ class CustomerAccountService
             }
         }
 
-        $context = $this->getSalesChannelContext();
-        $parent = $context->getCustomer();
         $customerId = empty($data['customerId']) ? Uuid::randomHex() : $data['customerId'];
 
         $data = array_merge($data, [
@@ -206,7 +203,8 @@ class CustomerAccountService
             'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),
             'defaultShippingAddressId' => $parent->getDefaultShippingAddressId(),
             'customFields' => [
-                'moorl_ca_parent_id' => $parent->getId()
+                'moorl_ca_parent_id' => $parent->getId(),
+                'moorl_ca_order_copy' => !empty($data['orderCopy'])
             ],
         ]);
 

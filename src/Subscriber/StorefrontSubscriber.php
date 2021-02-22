@@ -42,6 +42,21 @@ class StorefrontSubscriber implements EventSubscriberInterface
     public function onOrderPlaced(CheckoutOrderPlacedEvent $event): void
     {
         $this->customerAccountService->addCustomerIdToOrder($event->getOrder());
+
+        $salesChannelContext = $this->customerAccountService->getSalesChannelContext();
+        $customer = $salesChannelContext->getCustomer();
+
+        /* @var $customerAccount CustomerAccountStruct */
+        $customerAccount = $customer->getExtension('CustomerAccount');
+
+        if ($customerAccount && $customerAccount->getOrderCopy()) {
+            $email = $customerAccount->getParent()->getEmail();
+
+            $recipents = $event->getMailStruct()->getRecipients();
+            $recipents[$email] = $email;
+            $event->getMailStruct()->setRecipients($recipents);
+            $event->getMailStruct()->setCc($email); // Not working for the moment
+        }
     }
 
     public function onSalesChannelContextResolved(SalesChannelContextResolvedEvent $event): void
@@ -59,6 +74,7 @@ class StorefrontSubscriber implements EventSubscriberInterface
 
         if ($customFields && !empty($customFields['moorl_ca_parent_id'])) {
             $customerAccount->setParent($this->customerAccountService->getCustomer($customFields['moorl_ca_parent_id'], false));
+            $customerAccount->setOrderCopy(!empty($customFields['moorl_ca_order_copy']));
             $customer->setId($customFields['moorl_ca_parent_id']);
         } else {
             $customerAccount->setChildren($this->customerAccountService->getCustomers());

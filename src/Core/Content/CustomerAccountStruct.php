@@ -16,6 +16,26 @@ class CustomerAccountStruct extends Struct
      * @var CustomerCollection|null
      */
     protected $children;
+    /**
+     * @var bool|null
+     */
+    protected $orderCopy;
+
+    /**
+     * @return bool|null
+     */
+    public function getOrderCopy(): ?bool
+    {
+        return $this->orderCopy;
+    }
+
+    /**
+     * @param bool|null $orderCopy
+     */
+    public function setOrderCopy(?bool $orderCopy): void
+    {
+        $this->orderCopy = $orderCopy;
+    }
 
     /**
      * @return CustomerEntity|null

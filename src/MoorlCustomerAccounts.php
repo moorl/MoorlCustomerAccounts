@@ -38,6 +38,18 @@ class MoorlCustomerAccounts extends Plugin
                 ],
                 'customFields' => [
                     [
+                        'name' => 'moorl_ca_order_copy',
+                        'type' => 'bool',
+                        'config' => [
+                            'componentName' => 'sw-field',
+                            'customFieldType' => 'switch',
+                            'label' => [
+                                'en-GB' => 'Send copy of orders',
+                                'de-DE' => 'Sende Kopie von Bestellungen',
+                            ],
+                        ]
+                    ],
+                    [
                         'name' => 'moorl_ca_parent_id',
                         'type' => CustomFieldTypes::JSON,
                         'config' => [
