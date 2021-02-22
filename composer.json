@@ -22,12 +22,12 @@
         "shopware-plugin-class": "MoorlCustomerAccounts\\MoorlCustomerAccounts",
         "copyright": "(c) by moori",
         "label": {
-            "de-DE": "Kunden Accounts für Shopware 6",
-            "en-GB": "Customer accounts for Shopware 6"
+            "de-DE": "Kunden Zugangsverwaltung für Shopware 6",
+            "en-GB": "Customer access management for Shopware 6"
         },
         "description": {
-            "de-DE": "Kunden Accounts für Shopware 6",
-            "en-GB": "Customer accounts for Shopware 6"
+            "de-DE": "Kunden Zugangsverwaltung für Shopware 6",
+            "en-GB": "Customer access management for Shopware 6"
         },
         "manufacturerLink": {
             "de-DE": "https://docs.moori.net/",
