@@ -66,7 +66,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
         return $this->renderStorefront('@Storefront/storefront/page/account/customer-accounts/index.html.twig', [
             'page' => $page,
-            'customers' => $this->customerAccountService->getCustomers()
+            'children' => $this->customerAccountService->getCustomers()
         ]);
     }
 

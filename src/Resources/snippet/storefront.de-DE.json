@@ -1,5 +1,29 @@
 {
     "moorl-customer-accounts": {
-        "customerAccounts": "Customer accounts"
+        "customerAccounts": "Kunden Accounts",
+        "createCustomer": "Neuen Kunden erstellen",
+        "sendNewPassword": "Neues Passwort senden",
+        "sendNewPasswordDescription": "Sende ein initiales Passwort",
+        "customerAccountsWelcome": "Kunden Verwaltung",
+        "customerAccountsText": "Erstellen und ändern Sie Ihre Kunden hier",
+        "save": "Speichern",
+        "active": "Aktiv",
+        "customerNumber": "Kundennummer",
+        "customerName": "Name",
+        "options": "Optionen",
+        "editCustomer": "Bearbeiten",
+        "email": "E-Mail",
+        "customerCreated": "Kunde wurde erstellt",
+        "remove": "Entfernen",
+        "customerRemoved": "Kunde wurde entfernt",
+        "newPasswordSent": "Initiales Passwort wurde gesendet",
+        "passwordPlaceholder": "Leer lassen für zufälliges Passwort",
+        "customerNumberInfo": "Die Kundennummer muss mit der Kundennummer des Haupt-Accounts beginnen (%customerNumber%)",
+        "errorNoPermission": "Fehler: Keine Berechtigung %parentId% und %customerId%",
+        "errorEmailInUse": "Fehler: Die E-Mail Adresse %email% ist bereits vorhanden.",
+        "errorCustomerNumber": "Fehler: Die Kundennummer muss mit der Kundennummer des Haupt-Accounts beginnen `%customerNumber%`",
+        "parentAccountInfo": "Die ist ein Hauptaccount, Sie können mehrere Unteraccounts erstellen",
+        "childAccountInfo": "Dies ist ein Unteraccount von %email%",
+        "lastLogin": "Letzer Login"
     }
 }

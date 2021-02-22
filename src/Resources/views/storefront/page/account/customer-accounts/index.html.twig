@@ -40,32 +40,38 @@
                             <th scope="col">{{ "moorl-customer-accounts.customerNumber"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.email"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.customerName"|trans|sw_sanitize }}</th>
+                            <th scope="col">{{ "moorl-customer-accounts.lastLogin"|trans|sw_sanitize }}</th>
                             <th class="text-right" scope="col">{{ "moorl-customer-accounts.options"|trans|sw_sanitize }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for customer in customers %}
+                        {% for child in children %}
                             <tr>
                                 <td class="text-center">
-                                    {% if customer.active %}
+                                    {% if child.active %}
                                         {% sw_icon 'checkmark' %}
                                     {% else %}
                                         {% sw_icon 'x' %}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    {{ customer.customerNumber }}
+                                    {{ child.customerNumber }}
                                 </td>
                                 <td>
-                                    {{ customer.email }}
+                                    {{ child.email }}
                                 </td>
                                 <td>
-                                    {{ customer.firstName }} {{ customer.lastname }}
+                                    {{ child.firstName }} {{ child.lastname }}
+                                </td>
+                                <td>
+                                    {% if child.lastLogin %}
+                                        {{ child.lastLogin|format_date('short', locale=app.request.locale) }}
+                                    {% endif %}
                                 </td>
                                 <td class="text-right">
                                     <button type="button"
                                             class="btn btn-sm btn-light"
-                                            data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit',{ 'customerId': customer.id}) }}">
+                                            data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit',{ 'customerId': child.id}) }}">
                                         {{ "moorl-customer-accounts.editCustomer"|trans|sw_sanitize }}
                                     </button>
                                 </td>
