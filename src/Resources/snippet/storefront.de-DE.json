@@ -24,6 +24,7 @@
         "errorCustomerNumber": "Fehler: Die Kundennummer muss mit der Kundennummer des Haupt-Accounts beginnen `%customerNumber%`",
         "parentAccountInfo": "Die ist ein Hauptaccount, Sie können mehrere Unteraccounts erstellen",
         "childAccountInfo": "Dies ist ein Unteraccount von %email%",
-        "lastLogin": "Letzer Login"
+        "lastLogin": "Letzer Login",
+        "notAllowed": "Diese Aktion ist nicht erlaubt"
     }
 }

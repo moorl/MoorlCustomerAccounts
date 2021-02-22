@@ -151,6 +151,12 @@ class CustomerAccountService
 
     public function removeCustomer(array $data): void
     {
+        $customers = $this->getCustomers();
+
+        if (!$customers || !$customers->has($data['customerId'])) {
+            throw new \Exception($this->translator->trans('moorl-customer-accounts.notAllowed'));
+        }
+
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
 
         $repo->delete([['id' => $data['customerId']]], $this->getSalesChannelContext()->getContext());
@@ -179,6 +185,12 @@ class CustomerAccountService
             }
         } else {
             unset($data['customerNumber']);
+
+            $customers = $this->getCustomers();
+
+            if (!$customers || !$customers->has($data['customerId'])) {
+                throw new \Exception($this->translator->trans('moorl-customer-accounts.notAllowed'));
+            }
         }
 
         $context = $this->getSalesChannelContext();

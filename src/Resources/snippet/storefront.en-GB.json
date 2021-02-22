@@ -24,6 +24,7 @@
         "errorCustomerNumber": "Error: The customer number have to start with `%customerNumber%`",
         "parentAccountInfo": "This is a parent account, you can create multipe child accounts",
         "childAccountInfo": "This is a child account of %email%",
-        "lastLogin": "Last login"
+        "lastLogin": "Last login",
+        "notAllowed": "This action is not allowed"
     }
 }
