@@ -22,6 +22,7 @@
                 <div class="form-group">
                     <button type="button"
                             class="btn btn-primary btn-block"
+                            aria-label="{{ "moorl-customer-accounts.createCustomer"|trans|sw_sanitize }}"
                             data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit') }}">
                         {{ "moorl-customer-accounts.createCustomer"|trans|sw_sanitize }}
                     </button>
@@ -71,6 +72,7 @@
                                 <td class="text-right">
                                     <button type="button"
                                             class="btn btn-sm btn-light"
+                                            aria-label="{{ "moorl-customer-accounts.editCustomer"|trans|sw_sanitize }}"
                                             data-moorl-foundation-modal="{{ path('moorl-customer-accounts.account.customer-accounts.edit',{ 'customerId': child.id}) }}">
                                         {{ "moorl-customer-accounts.editCustomer"|trans|sw_sanitize }}
                                     </button>
