@@ -17,6 +17,10 @@
         <service id="MoorlCustomerAccounts\Controller\StorefrontController" public="true">
             <argument type="service" id="MoorlCustomerAccounts\Core\Service\CustomerAccountService"/>
             <argument type="service" id="Shopware\Storefront\Page\Account\Profile\AccountProfilePageLoader"/>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
         </service>
 
         <!-- Subscriber -->
@@ -24,7 +28,5 @@
             <argument type="service" id="MoorlCustomerAccounts\Core\Service\CustomerAccountService"/>
             <tag name="kernel.event_subscriber"/>
         </service>
-
-        <!-- Entity -->
     </services>
 </container>

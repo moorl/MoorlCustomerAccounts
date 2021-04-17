@@ -261,7 +261,7 @@ class CustomerAccountService
      */
     public function getSalutations(): SalutationCollection
     {
-        $salutations = $this->salutationRoute->load(new Request(), $this->getSalesChannelContext())->getSalutations();
+        $salutations = $this->salutationRoute->load(new Request(), $this->getSalesChannelContext(), new Criteria())->getSalutations();
 
         $salutations->sort(function (SalutationEntity $a, SalutationEntity $b) {
             return $b->getSalutationKey() <=> $a->getSalutationKey();

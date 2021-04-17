@@ -3,6 +3,7 @@
 namespace MoorlCustomerAccounts\Controller;
 
 use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
+use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
 use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Profile\AccountProfilePageLoader;
@@ -36,11 +37,10 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
     /**
      * @Route("/account/customer-accounts", name="moorl-customer-accounts.account.customer-accounts.page", methods={"GET","POST"})
+     * @LoginRequired()
      */
     public function profileCustomerAccounts(Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
-
         $this->customerAccountService->setSalesChannelContext($context);
 
         if ($action = $request->request->get('action')) {
@@ -72,11 +72,10 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
     /**
      * @Route("/account/edit/{customerId}", name="moorl-customer-accounts.account.customer-accounts.edit", methods={"GET"}, defaults={"customerId"=null,"XmlHttpRequest"=true})
+     * @LoginRequired()
      */
     public function editCustomerModal(?string $customerId, Request $request, SalesChannelContext $context): Response
     {
-        $this->denyAccessUnlessLoggedIn();
-
         $this->customerAccountService->setSalesChannelContext($context);
 
         $customer = $this->customerAccountService->getCustomer($customerId);
