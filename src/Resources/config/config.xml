@@ -12,4 +12,16 @@
             <label lang="de-DE">Aktiviere Unter-Accounts für diese Kundengruppen.</label>
         </component>
     </card>
+
+    <card>
+        <title>Notifications</title>
+        <title lang="de-DE">Benachrichtigungen</title>
+
+        <input-field type="bool">
+            <name>enableNotificationSettings</name>
+            <label>Enable notification settings</label>
+            <label lang="de-DE">Benachrichtigungseinstellungen aktivieren</label>
+            <defaultValue>true</defaultValue>
+        </input-field>
+    </card>
 </config>

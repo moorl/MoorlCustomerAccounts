@@ -41,9 +41,13 @@ class StorefrontSubscriber implements EventSubscriberInterface
 
     public function onOrderPlaced(CheckoutOrderPlacedEvent $event): void
     {
+        $salesChannelContext = $this->customerAccountService->getSalesChannelContext();
+        if (!$salesChannelContext) {
+            return;
+        }
+
         $this->customerAccountService->addCustomerIdToOrder($event->getOrder());
 
-        $salesChannelContext = $this->customerAccountService->getSalesChannelContext();
         $customer = $salesChannelContext->getCustomer();
 
         /* @var $customerAccount CustomerAccountStruct */

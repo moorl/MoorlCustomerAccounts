@@ -71,6 +71,36 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
     }
 
     /**
+     * @Route("/account/notification-settings", name="moorl-customer-accounts.account.notification-settings.page", methods={"GET","POST"})
+     * @LoginRequired()
+     */
+    public function profileNotificationSettings(Request $request, SalesChannelContext $context): Response
+    {
+        $this->customerAccountService->setSalesChannelContext($context);
+        $orderBusinessEvents = $this->customerAccountService->getOrderBusinessEvents();
+
+        if ($action = $request->request->get('action')) {
+            try {
+                if ($action == 'edit') {
+                    $this->customerAccountService->saveNotificationSettings($request->request->get('moorl_ca_email'));
+                    $this->addFlash('success', $this->trans('moorl-customer-accounts.settingsSaved'));
+                } else {
+                    throw new \Exception('Something went wrong');
+                }
+            } catch (\Exception $exception) {
+                $this->addFlash('danger', $exception->getMessage());
+            }
+        }
+
+        $page = $this->profilePageLoader->load($request, $context);
+
+        return $this->renderStorefront('@Storefront/storefront/page/account/notification-settings/index.html.twig', [
+            'page' => $page,
+            'orderBusinessEvents' => $orderBusinessEvents
+        ]);
+    }
+
+    /**
      * @Route("/account/edit/{customerId}", name="moorl-customer-accounts.account.customer-accounts.edit", methods={"GET"}, defaults={"customerId"=null,"XmlHttpRequest"=true})
      * @LoginRequired()
      */

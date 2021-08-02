@@ -1,0 +1,59 @@
+{% sw_extends '@Storefront/storefront/page/account/_page.html.twig' %}
+
+{% block page_account_main_content %}
+    <div class="account-notification_settings">
+        {% block page_account_notification_settings_welcome %}
+            <div class="account-welcome">
+                {% block page_account_notification_settings_welcome_headline %}
+                    <h1>
+                        {{ "moorl-customer-accounts.notificationSettingsWelcome"|trans|sw_sanitize }}
+                    </h1>
+                {% endblock %}
+                {% block page_account_notification_settings_welcome_intro %}
+                    <p>
+                        {{ "moorl-customer-accounts.notificationSettingsText"|trans|sw_sanitize }}
+                    </p>
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block page_account_notification_settings_main %}
+            <form action="{{ seoUrl('moorl-customer-accounts.account.notification-settings.page') }}"
+                  method="post">
+                {{ sw_csrf('moorl-customer-accounts.account.notification-settings.page') }}
+
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">{{ "moorl-customer-accounts.notificationSettingsEvent"|trans }}</th>
+                        <th scope="col">{{ "moorl-customer-accounts.notificationSettingsEmail"|trans }}</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% for orderBusinessEvent in orderBusinessEvents %}
+                        {% set eventName = orderBusinessEvent.eventName|replace({".":"_"}) %}
+                        {% set eventNameLabel = "moorl-customer-accounts.businessEvents." ~ eventName %}
+
+                        <tr>
+                            <td>{{ eventNameLabel|trans }}</td>
+
+                            <td>
+                                <input type="text"
+                                       class="form-control"
+                                       name="moorl_ca_email[{{ eventName }}]"
+                                       value="{{ context.customer.customFields.moorl_ca_email[eventName] }}"
+                                       placeholder="{{ context.customer.email }}">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+
+                <button class="btn btn-primary" name="action" value="edit">
+                    {{ "moorl-customer-accounts.save"|trans|sw_sanitize }}
+                </button>
+            </form>
+        {% endblock %}
+    </div>
+{% endblock %}

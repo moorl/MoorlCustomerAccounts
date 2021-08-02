@@ -14,7 +14,12 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Event\EventAction\EventActionCollection;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
@@ -77,10 +82,16 @@ class CustomerAccountService
         $this->salutationRoute = $salutationRoute;
         $this->eventDispatcher = $eventDispatcher;
         $this->translator = $translator;
+
+        $this->context = Context::createDefaultContext();
     }
 
     public function addCustomerIdToOrder(OrderEntity $order): void
     {
+        if (!$this->getSalesChannelContext()) {
+            return;
+        }
+
         $customer = $this->getSalesChannelContext()->getCustomer();
 
         if ($customer->hasExtension('CustomerAccount')) {
@@ -99,6 +110,35 @@ class CustomerAccountService
                 ]], $this->getSalesChannelContext()->getContext());
             }
         }
+    }
+
+    public function saveNotificationSettings(array $settings): void
+    {
+        $customer = $this->salesChannelContext->getCustomer();
+
+        $payload = [
+            'id' => $customer->getId(),
+            'customFields' => [
+                'moorl_ca_email' => $settings
+            ]
+        ];
+        $customer->setCustomFields($payload['customFields']);
+
+        $repo = $this->definitionInstanceRegistry->getRepository('customer');
+
+        $repo->upsert([$payload], $this->context);
+    }
+
+    public function getOrderBusinessEvents(): EventActionCollection
+    {
+        $repo = $this->definitionInstanceRegistry->getRepository('event_action');
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new ContainsFilter('eventName', 'state_enter.order'));
+        $criteria->addSorting(new FieldSorting('eventName', FieldSorting::DESCENDING));
+        $criteria->addGroupField(new FieldGrouping('eventName'));
+
+        return $repo->search($criteria, $this->context)->getEntities();
     }
 
     public function getCustomer(?string $customerId, $isChild = true): ?CustomerEntity
@@ -300,5 +340,6 @@ class CustomerAccountService
     public function setSalesChannelContext(?SalesChannelContext $salesChannelContext): void
     {
         $this->salesChannelContext = $salesChannelContext;
+        $this->context = $salesChannelContext->getContext();
     }
 }
