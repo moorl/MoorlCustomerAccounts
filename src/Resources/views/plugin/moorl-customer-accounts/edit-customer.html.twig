@@ -9,14 +9,16 @@
         {% if customer %}
             <input type="text" class="form-control" id="customerNumber" value="{{ customer.customerNumber }}" readonly>
         {% else %}
-            <div class="input-group">
-                <div class="input-group-prepend">
-                <span class="input-group-text">
-                    {{ context.customer.customerNumber }}
-                </span>
+            {% if config('MoorlCustomerAccounts.config.customerNumberRule') == 'auto' %}
+                <input type="text" class="form-control" id="customerNumber" value="{{ "moorl-customer-accounts.auto"|trans|sw_sanitize }}" readonly>
+            {% else %}
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">{{ context.customer.customerNumber }}</span>
+                    </div>
+                    <input type="number" class="form-control" name="customerNumber" id="customerNumber" value="">
                 </div>
-                <input type="number" class="form-control" name="customerNumber" id="customerNumber" value="">
-            </div>
+            {% endif %}
         {% endif %}
     </div>
 

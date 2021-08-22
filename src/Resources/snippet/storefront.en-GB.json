@@ -1,5 +1,6 @@
 {
     "moorl-customer-accounts": {
+        "auto": "Automatic allocation",
         "customerAccounts": "Customer accounts",
         "createCustomer": "Create new customer",
         "sendNewPassword": "Send new Password",
@@ -21,7 +22,7 @@
         "customerNumberInfo": "Number have to start with your main customer number (%customerNumber%)",
         "errorNoPermission": "Error: No permission for %parentId% to %customerId%",
         "errorEmailInUse": "Error: The e-mail %email% is already in use.",
-        "errorCustomerNumber": "Error: The customer number have to start with `%customerNumber%`",
+        "errorDuplicateCustomerNumber": "Error: The customer number `%customerNumber%` is already given.",
         "parentAccountInfo": "This is a parent account, you can create multipe child accounts",
         "childAccountInfo": "This is a child account of %email%",
         "lastLogin": "Last login",

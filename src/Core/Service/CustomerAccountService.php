@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Event\EventAction\EventActionCollection;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\NumberRange\ValueGenerator\NumberRangeValueGeneratorInterface;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\Salutation\SalesChannel\AbstractSalutationRoute;
 use Shopware\Core\System\Salutation\SalutationCollection;
@@ -66,6 +67,10 @@ class CustomerAccountService
      * @var Translator
      */
     private $translator;
+    /**
+     * @var NumberRangeValueGeneratorInterface
+     */
+    private $numberRangeValueGenerator;
 
     public function __construct(
         DefinitionInstanceRegistry $definitionInstanceRegistry,
@@ -73,7 +78,8 @@ class CustomerAccountService
         RequestStack $requestStack,
         AbstractSalutationRoute $salutationRoute,
         EventDispatcherInterface $eventDispatcher,
-        Translator $translator
+        Translator $translator,
+        NumberRangeValueGeneratorInterface $numberRangeValueGenerator
     )
     {
         $this->definitionInstanceRegistry = $definitionInstanceRegistry;
@@ -82,6 +88,7 @@ class CustomerAccountService
         $this->salutationRoute = $salutationRoute;
         $this->eventDispatcher = $eventDispatcher;
         $this->translator = $translator;
+        $this->numberRangeValueGenerator = $numberRangeValueGenerator;
 
         $this->context = Context::createDefaultContext();
     }
@@ -221,7 +228,29 @@ class CustomerAccountService
                 throw new \Exception($this->translator->trans('moorl-customer-accounts.errorEmailInUse', ['%email%' => $data['email']]));
             }
 
-            $data['customerNumber'] = $parent->getCustomerNumber() . '-' . $data['customerNumber'];
+            $customerNumberRule = $this->systemConfigService->get('MoorlCustomerAccounts.config.customerNumberRule');
+
+            if ($customerNumberRule == 'auto') {
+                $data['customerNumber'] = $this->numberRangeValueGenerator->getValue(
+                    $repo->getDefinition()->getEntityName(),
+                    $context->getContext(),
+                    $context->getSalesChannel()->getId()
+                );
+            } elseif ($customerNumberRule == 'manualUnique') {
+                $data['customerNumber'] = $parent->getCustomerNumber() . '-' . $data['customerNumber'];
+
+                $criteria = new Criteria();
+                $criteria->setLimit(1);
+                $criteria->addFilter(new EqualsFilter('customer.customerNumber', $data['customerNumber']));
+
+                $results = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->count();
+
+                if ($results > 0) {
+                    throw new \Exception($this->translator->trans('moorl-customer-accounts.errorDuplicateCustomerNumber', ['%customerNumber%' => $data['customerNumber']]));
+                }
+            } else {
+                $data['customerNumber'] = $parent->getCustomerNumber() . '-' . $data['customerNumber'];
+            }
         } else {
             unset($data['customerNumber']);
 

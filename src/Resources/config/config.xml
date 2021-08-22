@@ -11,6 +11,30 @@
             <label>Enable sub-cccounts for this customer groups.</label>
             <label lang="de-DE">Aktiviere Unter-Accounts für diese Kundengruppen.</label>
         </component>
+
+        <input-field type="single-select">
+            <name>customerNumberRule</name>
+            <label>Rules for Sub-Account Customer Numbers</label>
+            <label lang="de-DE">Regeln für die Kundennummern der Unter-Accounts</label>
+            <options>
+                <option>
+                    <id>auto</id>
+                    <name>Automatic allocation</name>
+                    <name lang="de-DE">Automatische Vergabe</name>
+                </option>
+                <option>
+                    <id>manual</id>
+                    <name>Manual</name>
+                    <name lang="de-DE">Manuell</name>
+                </option>
+                <option>
+                    <id>manualUnique</id>
+                    <name>Manual with Unique-Check</name>
+                    <name lang="de-DE">Manuell und einmalig</name>
+                </option>
+            </options>
+            <defaultValue>manual</defaultValue>
+        </input-field>
     </card>
 
     <card>
