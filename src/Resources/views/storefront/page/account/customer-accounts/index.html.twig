@@ -39,6 +39,9 @@
                         <tr>
                             <th scope="col">{{ "moorl-customer-accounts.active"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.customerNumber"|trans|sw_sanitize }}</th>
+                            {% if not config('MoorlCustomerAccounts.config.inheritGroup') %}
+                                <th scope="col">{{ "moorl-customer-accounts.group"|trans|sw_sanitize }}</th>
+                            {% endif %}
                             <th scope="col">{{ "moorl-customer-accounts.email"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.customerName"|trans|sw_sanitize }}</th>
                             <th scope="col">{{ "moorl-customer-accounts.lastLogin"|trans|sw_sanitize }}</th>
@@ -58,6 +61,11 @@
                                 <td>
                                     {{ child.customerNumber }}
                                 </td>
+                                {% if not config('MoorlCustomerAccounts.config.inheritGroup') %}
+                                    <td>
+                                        {{ child.group.name }}
+                                    </td>
+                                {% endif %}
                                 <td>
                                     {{ child.email }}
                                 </td>

@@ -5,6 +5,7 @@ namespace MoorlCustomerAccounts\Core\Service;
 use Doctrine\DBAL\Connection;
 use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Event\InitialPasswordEvent;
+use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -158,6 +159,7 @@ class CustomerAccountService
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
 
         $criteria = new Criteria([$customerId]);
+        $criteria->addAssociation('group');
         $criteria->setLimit(1);
         if ($isChild) {
             $parentId = $this->getSalesChannelContext()->getCustomer()->getId();
@@ -190,6 +192,7 @@ class CustomerAccountService
         }
 
         $criteria = new Criteria();
+        $criteria->addAssociation('group');
         $criteria->setLimit(500);
         $criteria->addFilter(new EqualsFilter('customFields.moorl_ca_parent_id', $parentId));
 
@@ -207,6 +210,31 @@ class CustomerAccountService
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
 
         $repo->delete([['id' => $data['customerId']]], $this->getSalesChannelContext()->getContext());
+    }
+
+    public function syncCustomer(CustomerEntity $customer, CustomerEntity $parent): void
+    {
+        if ($customer->getGroupId() === $parent->getGroupId()) {
+            return;
+        }
+
+        if (!$this->systemConfigService->get('MoorlCustomerAccounts.config.inheritGroup')) {
+            return;
+        }
+
+        $repo = $this->definitionInstanceRegistry->getRepository('customer');
+
+        $data = [
+            'id' => $customer->getId(),
+            'groupId' => $parent->getGroupId(),
+            'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),
+            'defaultShippingAddressId' => $parent->getDefaultShippingAddressId(),
+            'customFields' => [
+                'moorl_ca_parent_id' => $parent->getId()
+            ],
+        ];
+
+        $repo->upsert([$data], $this->context);
     }
 
     public function addCustomer(array $data): void
@@ -266,7 +294,7 @@ class CustomerAccountService
         $data = array_merge($data, [
             'id' => $customerId,
             'active' => isset($data['active']),
-            'groupId' => $this->getSalesChannelContext()->getCurrentCustomerGroup()->getId(),
+            'groupId' => $parent->getGroupId(),
             'defaultPaymentMethodId' => $context->getPaymentMethod()->getId(),
             'salesChannelId' => $context->getSalesChannel()->getId(),
             'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),

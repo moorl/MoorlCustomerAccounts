@@ -9,8 +9,11 @@ use Doctrine\DBAL\ParameterType;
 use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
 use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
+use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Customer\Event\CustomerLoginEvent;
 use Shopware\Core\Framework\Routing\Event\SalesChannelContextResolvedEvent;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -65,7 +68,8 @@ class StorefrontSubscriber implements EventSubscriberInterface
 
     public function onSalesChannelContextResolved(SalesChannelContextResolvedEvent $event): void
     {
-        $customer = $event->getSalesChannelContext()->getCustomer();
+        $salesChannelContext = $event->getSalesChannelContext();
+        $customer = $salesChannelContext->getCustomer();
 
         if (!$customer) {
             return;
@@ -77,9 +81,13 @@ class StorefrontSubscriber implements EventSubscriberInterface
         $customFields = $customer->getCustomFields();
 
         if ($customFields && !empty($customFields['moorl_ca_parent_id'])) {
-            $customerAccount->setParent($this->customerAccountService->getCustomer($customFields['moorl_ca_parent_id'], false));
+            $parent = $this->customerAccountService->getCustomer($customFields['moorl_ca_parent_id'], false);
+
+            $this->customerAccountService->syncCustomer($customer, $parent);
+
+            $customerAccount->setParent($parent);
             $customerAccount->setOrderCopy(!empty($customFields['moorl_ca_order_copy']));
-            $customer->setId($customFields['moorl_ca_parent_id']);
+            $customer->setId($parent->getId());
         } else {
             $customerAccount->setChildren($this->customerAccountService->getCustomers());
         }

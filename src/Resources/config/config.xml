@@ -35,6 +35,13 @@
             </options>
             <defaultValue>manual</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>inheritGroup</name>
+            <label>Always Inherit Main-Account's Customer Group</label>
+            <label lang="de-DE">Immer Kundengruppe des Hauptaccounts vererben</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
 
     <card>

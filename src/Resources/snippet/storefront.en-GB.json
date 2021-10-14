@@ -10,6 +10,7 @@
         "save": "Save",
         "active": "Active",
         "customerNumber": "Customer number",
+        "group": "Customer group",
         "customerName": "Name",
         "options": "Options",
         "editCustomer": "Edit",
