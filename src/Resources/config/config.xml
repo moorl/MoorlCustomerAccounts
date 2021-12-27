@@ -32,6 +32,11 @@
                     <name>Manual with Unique-Check</name>
                     <name lang="de-DE">Manuell und einmalig</name>
                 </option>
+                <option>
+                    <id>identical</id>
+                    <name>Identical customer number</name>
+                    <name lang="de-DE">Identische Kundennummer</name>
+                </option>
             </options>
             <defaultValue>manual</defaultValue>
         </input-field>

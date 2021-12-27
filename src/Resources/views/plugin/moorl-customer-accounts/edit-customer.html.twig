@@ -11,6 +11,8 @@
         {% else %}
             {% if config('MoorlCustomerAccounts.config.customerNumberRule') == 'auto' %}
                 <input type="text" class="form-control" id="customerNumber" value="{{ "moorl-customer-accounts.auto"|trans|sw_sanitize }}" readonly>
+            {% elseif config('MoorlCustomerAccounts.config.customerNumberRule') == 'identical' %}
+                <input type="text" class="form-control" id="customerNumber" value="{{ context.customer.customerNumber }}" readonly>
             {% else %}
                 <div class="input-group">
                     <div class="input-group-prepend">

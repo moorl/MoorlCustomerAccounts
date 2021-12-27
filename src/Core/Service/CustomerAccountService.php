@@ -186,8 +186,7 @@ class CustomerAccountService
         $groupId = $customer->getGroupId();
 
         $groupIds = $this->systemConfigService->get('MoorlCustomerAccounts.config.groupIds', $context->getSalesChannelId());
-
-        if (!$groupIds || !in_array($groupId, $groupIds)) {
+        if ($groupIds && !in_array($groupId, $groupIds)) {
             return null;
         }
 
@@ -264,6 +263,8 @@ class CustomerAccountService
                     $context->getContext(),
                     $context->getSalesChannel()->getId()
                 );
+            } elseif ($customerNumberRule == 'identical') {
+                $data['customerNumber'] = $parent->getCustomerNumber();
             } elseif ($customerNumberRule == 'manualUnique') {
                 $data['customerNumber'] = $parent->getCustomerNumber() . '-' . $data['customerNumber'];
 
