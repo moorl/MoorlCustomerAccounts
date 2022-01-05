@@ -17,6 +17,12 @@ class MoorlCustomerAccounts extends Plugin
     public const EVENT_NAME = 'moorl_ca_initial_password.send';
     public const TECHNICAL_NAME = 'moorl_ca_initial_password';
 
+    public const PLUGIN_CUSTOM_FIELDS = [
+        'moorl_ca_parent_id',
+        'moorl_ca_customer_id',
+        'moorl_ca_order_copy',
+    ];
+
     private function refreshPluginData(Context $context, $justDelete = null): void
     {
         /* @var $foundation PluginFoundation */

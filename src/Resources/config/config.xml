@@ -47,6 +47,13 @@
             <label lang="de-DE">Immer Kundengruppe des Hauptaccounts vererben</label>
             <defaultValue>false</defaultValue>
         </input-field>
+
+        <input-field type="bool">
+            <name>inheritCustomFields</name>
+            <label>Always Inherit Main-Account's Custom Fields</label>
+            <label lang="de-DE">Immer Freitextfelder des Hauptaccounts vererben</label>
+            <defaultValue>false</defaultValue>
+        </input-field>
     </card>
 
     <card>

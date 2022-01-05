@@ -5,7 +5,7 @@ namespace MoorlCustomerAccounts\Core\Service;
 use Doctrine\DBAL\Connection;
 use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Event\InitialPasswordEvent;
-use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
+use MoorlCustomerAccounts\MoorlCustomerAccounts;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
@@ -17,7 +17,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaI
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Event\EventAction\EventActionCollection;
@@ -213,27 +212,50 @@ class CustomerAccountService
 
     public function syncCustomer(CustomerEntity $customer, CustomerEntity $parent): void
     {
-        if ($customer->getGroupId() === $parent->getGroupId()) {
+        $sameGroupId = ($customer->getGroupId() === $parent->getGroupId());
+        $sameBoundSalesChannelId = ($customer->getBoundSalesChannelId() === $parent->getBoundSalesChannelId());
+        $customerCustomFields = $this->filteredCustomFields($customer->getCustomFields());
+        $parentCustomFields = $this->filteredCustomFields($parent->getCustomFields());
+        $sameCustomFields = !array_diff($customerCustomFields, $parentCustomFields) && !array_diff($parentCustomFields, $customerCustomFields);
+
+        if ($sameGroupId && $sameBoundSalesChannelId && $sameCustomFields) {
             return;
         }
 
-        if (!$this->systemConfigService->get('MoorlCustomerAccounts.config.inheritGroup')) {
-            return;
+        $data = [
+            'id' => $customer->getId(),
+            'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),
+            'defaultShippingAddressId' => $parent->getDefaultShippingAddressId()
+        ];
+
+        if (!$sameGroupId && $this->systemConfigService->get('MoorlCustomerAccounts.config.inheritGroup')) {
+            $data['groupId'] = $parent->getGroupId();
+        }
+
+        if (!$sameBoundSalesChannelId) {
+            $data['boundSalesChannelId'] = $parent->getBoundSalesChannelId();
+        }
+
+        if (!$sameCustomFields && $this->systemConfigService->get('MoorlCustomerAccounts.config.inheritCustomFields')) {
+            $data['customFields'] = array_merge($parentCustomFields, [
+                'moorl_ca_parent_id' => $parent->getId()
+            ]);
         }
 
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
 
-        $data = [
-            'id' => $customer->getId(),
-            'groupId' => $parent->getGroupId(),
-            'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),
-            'defaultShippingAddressId' => $parent->getDefaultShippingAddressId(),
-            'customFields' => [
-                'moorl_ca_parent_id' => $parent->getId()
-            ],
-        ];
-
         $repo->upsert([$data], $this->context);
+    }
+
+    private function filteredCustomFields(array $customFields): array
+    {
+        foreach (MoorlCustomerAccounts::PLUGIN_CUSTOM_FIELDS as $customField) {
+            unset($customFields[$customField]);
+        }
+
+        ksort($customFields);
+
+        return $customFields;
     }
 
     public function addCustomer(array $data): void
@@ -241,7 +263,6 @@ class CustomerAccountService
         $repo = $this->definitionInstanceRegistry->getRepository('customer');
         $context = $this->getSalesChannelContext();
         $parent = $context->getCustomer();
-
 
         if (empty($data['customerId'])) {
             $criteria = new Criteria();
@@ -296,6 +317,7 @@ class CustomerAccountService
             'id' => $customerId,
             'active' => isset($data['active']),
             'groupId' => $parent->getGroupId(),
+            'boundSalesChannelId' => $parent->getBoundSalesChannelId(),
             'defaultPaymentMethodId' => $context->getPaymentMethod()->getId(),
             'salesChannelId' => $context->getSalesChannel()->getId(),
             'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),
