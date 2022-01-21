@@ -247,8 +247,12 @@ class CustomerAccountService
         $repo->upsert([$data], $this->context);
     }
 
-    private function filteredCustomFields(array $customFields): array
+    private function filteredCustomFields(?array $customFields): array
     {
+        if (!$customFields) {
+            return [];
+        }
+
         foreach (MoorlCustomerAccounts::PLUGIN_CUSTOM_FIELDS as $customField) {
             unset($customFields[$customField]);
         }
