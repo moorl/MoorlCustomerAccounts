@@ -9,7 +9,7 @@ use MoorlCustomerAccounts\MoorlCustomerAccounts;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
-use Shopware\Core\Framework\Adapter\Translation\Translator;
+use Shopware\Core\Framework\Adapter\Translation\AbstractTranslator;
 use Shopware\Core\Framework\App\Validation\Error\MissingPermissionError;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
@@ -64,7 +64,7 @@ class CustomerAccountService
      */
     private $eventDispatcher;
     /*
-     * @var Translator
+     * @var AbstractTranslator
      */
     private $translator;
     /**
@@ -73,12 +73,12 @@ class CustomerAccountService
     private $numberRangeValueGenerator;
 
     public function __construct(
-        DefinitionInstanceRegistry $definitionInstanceRegistry,
-        SystemConfigService $systemConfigService,
-        RequestStack $requestStack,
-        AbstractSalutationRoute $salutationRoute,
-        EventDispatcherInterface $eventDispatcher,
-        Translator $translator,
+        DefinitionInstanceRegistry         $definitionInstanceRegistry,
+        SystemConfigService                $systemConfigService,
+        RequestStack                       $requestStack,
+        AbstractSalutationRoute            $salutationRoute,
+        EventDispatcherInterface           $eventDispatcher,
+        AbstractTranslator                 $translator,
         NumberRangeValueGeneratorInterface $numberRangeValueGenerator
     )
     {
@@ -216,7 +216,8 @@ class CustomerAccountService
         $sameBoundSalesChannelId = ($customer->getBoundSalesChannelId() === $parent->getBoundSalesChannelId());
         $customerCustomFields = $this->filteredCustomFields($customer->getCustomFields());
         $parentCustomFields = $this->filteredCustomFields($parent->getCustomFields());
-        $sameCustomFields = !array_diff($customerCustomFields, $parentCustomFields) && !array_diff($parentCustomFields, $customerCustomFields);
+        //$sameCustomFields = !array_diff($customerCustomFields, $parentCustomFields) && !array_diff($parentCustomFields, $customerCustomFields);
+        $sameCustomFields = empty(self::arrayMultiDiff($customerCustomFields, $parentCustomFields));
 
         if ($sameGroupId && $sameBoundSalesChannelId && $sameCustomFields) {
             return;
@@ -425,5 +426,26 @@ class CustomerAccountService
     {
         $this->salesChannelContext = $salesChannelContext;
         $this->context = $salesChannelContext->getContext();
+    }
+
+    public static function arrayMultiDiff($array1, $array2): array
+    {
+        $result = [];
+        foreach ($array1 as $key => $a1) {
+            if (!array_key_exists($key, $array2)) {
+                $result[$key] = $a1;
+                continue;
+            }
+            $a2 = $array2[$key];
+            if (is_array($a1)) {
+                $recc_array = self::array_multi_diff($a1, $a2);
+                if (!empty($recc_array)) {
+                    $result[$key] = $recc_array;
+                }
+            } else if ($a1 != $a2) {
+                $result[$key] = $a1;
+            }
+        }
+        return $result;
     }
 }
