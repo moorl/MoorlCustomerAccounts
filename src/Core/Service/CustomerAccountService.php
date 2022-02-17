@@ -438,7 +438,7 @@ class CustomerAccountService
             }
             $a2 = $array2[$key];
             if (is_array($a1)) {
-                $recc_array = self::array_multi_diff($a1, $a2);
+                $recc_array = self::arrayMultiDiff($a1, $a2);
                 if (!empty($recc_array)) {
                     $result[$key] = $recc_array;
                 }
