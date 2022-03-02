@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaI
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Event\EventAction\EventActionCollection;
@@ -274,8 +275,12 @@ class CustomerAccountService
             $criteria->setLimit(1);
             $criteria->addFilter(new EqualsFilter('customer.email', $data['email']));
             $criteria->addFilter(new EqualsFilter('customer.guest', 0));
+            $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, [
+                new EqualsFilter('customer.boundSalesChannelId', null),
+                new EqualsFilter('customer.boundSalesChannelId', $context->getSalesChannel()->getId()),
+            ]));
 
-            $results = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->count();
+            $results = $repo->search($criteria, $context->getContext())->count();
 
             if ($results > 0) {
                 throw new \Exception($this->translator->trans('moorl-customer-accounts.errorEmailInUse', ['%email%' => $data['email']]));
@@ -298,7 +303,7 @@ class CustomerAccountService
                 $criteria->setLimit(1);
                 $criteria->addFilter(new EqualsFilter('customer.customerNumber', $data['customerNumber']));
 
-                $results = $repo->search($criteria, $this->getSalesChannelContext()->getContext())->count();
+                $results = $repo->search($criteria, $context->getContext())->count();
 
                 if ($results > 0) {
                     throw new \Exception($this->translator->trans('moorl-customer-accounts.errorDuplicateCustomerNumber', ['%customerNumber%' => $data['customerNumber']]));
