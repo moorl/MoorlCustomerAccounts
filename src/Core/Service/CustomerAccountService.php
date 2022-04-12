@@ -364,7 +364,8 @@ class CustomerAccountService
                 $context->getSalesChannelId(),
                 new MailRecipientStruct([$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()]),
                 $customer,
-                $parent
+                $parent,
+                $password
             );
 
             $this->eventDispatcher->dispatch(
