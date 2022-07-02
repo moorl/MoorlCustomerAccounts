@@ -18,9 +18,6 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class StorefrontSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var CustomerAccountService
-     */
     private CustomerAccountService $customerAccountService;
 
     public function __construct(
