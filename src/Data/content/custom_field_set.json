@@ -1,0 +1,64 @@
+[
+  {
+    "id": "{ID:CUSTOM_FIELD}",
+    "name": "moorl_ca",
+    "config": {
+      "label": {
+        "en-GB": "Customer access management",
+        "de-DE": "Kunden Zugangsverwaltung"
+      }
+    },
+    "relations": [
+      {
+        "id": "{ID:customer}",
+        "entityName": "customer"
+      },
+      {
+        "id": "{ID:order}",
+        "entityName": "order"
+      }
+    ],
+    "customFields": [
+      {
+        "name": "moorl_ca_order_copy",
+        "type": "bool",
+        "config": {
+          "componentName": "sw-field",
+          "customFieldType": "switch",
+          "label": {
+            "en-GB": "Send copy of orders",
+            "de-DE": "Sende Kopie von Bestellungen"
+          }
+        }
+      },
+      {
+        "name": "moorl_ca_parent_id",
+        "type": "json",
+        "config": {
+          "componentName": "sw-entity-single-select",
+          "customFieldType": "json",
+          "entity": "customer",
+          "labelProperty": "email",
+          "label": {
+            "en-GB": "Main customer",
+            "de-DE": "Hauptkunde"
+          }
+        }
+      },
+      {
+        "name": "moorl_ca_customer_id",
+        "type": "json",
+        "config": {
+          "componentName": "sw-entity-single-select",
+          "customFieldType": "json",
+          "entity": "customer",
+          "labelProperty": "email",
+          "label": {
+            "en-GB": "Customer",
+            "de-DE": "Kunde"
+          }
+        }
+      }
+    ]
+  }
+]

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "{ID:MAIN_ENTITY_CFG}",
+    "entity": "moorl_fb",
+    "associationFields": [],
+    "folder": {
+      "id":  "{ID:MAIN_ENTITY_FOLDER}",
+      "name": "Form builder 2 customer upload",
+      "configurationId": "{MEDIA_FOLDER_CFG_ID}",
+      "useParentConfiguration": false
+    }
+  }
+]

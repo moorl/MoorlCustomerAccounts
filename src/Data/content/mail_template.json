@@ -1,0 +1,23 @@
+[
+  {
+    "id": "{ID:MOORL_CA_INITIAL_PW}",
+    "mailTemplateTypeId": "{ID:MOORL_CA}",
+    "systemDefault": true,
+    "translations": {
+      "{de-DE}": {
+        "senderName": "{{ salesChannel.name }}",
+        "subject": "Dein Zugang - {{ salesChannel.name }}",
+        "description": "Kunden Accounts Initiales Passwort",
+        "contentHtml": "{READ_FILE:mail-templates/moorl_ca_initial_password-de-DE.html.twig}",
+        "contentPlain": "{READ_FILE:mail-templates/moorl_ca_initial_password-de-DE.txt.twig}"
+      },
+      "{en-GB}": {
+        "senderName": "{{ salesChannel.name }}",
+        "subject": "Your access - {{ salesChannel.name }}",
+        "description": "Customer Accounts Initial Password",
+        "contentHtml": "{READ_FILE:mail-templates/moorl_ca_initial_password-en-GB.html.twig}",
+        "contentPlain": "{READ_FILE:mail-templates/moorl_ca_initial_password-en-GB.txt.twig}"
+      }
+    }
+  }
+]

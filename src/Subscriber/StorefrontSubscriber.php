@@ -21,7 +21,7 @@ class StorefrontSubscriber implements EventSubscriberInterface
     /**
      * @var CustomerAccountService
      */
-    private $customerAccountService;
+    private CustomerAccountService $customerAccountService;
 
     public function __construct(
         CustomerAccountService $customerAccountService

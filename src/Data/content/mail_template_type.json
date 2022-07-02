@@ -1,0 +1,18 @@
+[
+  {
+    "id": "{ID:MOORL_CA}",
+    "technicalName": "moorl_ca",
+    "availableEntities": {
+      "parent": "customer",
+      "customer": "customer"
+    },
+    "translations": {
+      "{de-DE}": {
+        "name": "Kunden Zugangsverwaltung"
+      },
+      "{en-GB}": {
+        "name": "Customer access management"
+      }
+    }
+  }
+]

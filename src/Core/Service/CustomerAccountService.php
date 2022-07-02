@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace MoorlCustomerAccounts\Core\Service;
 
@@ -36,42 +36,15 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CustomerAccountService
 {
-    /**
-     * @var Context
-     */
-    private $context;
-    /**
-     * @var SalesChannelContext|null
-     */
-    private $salesChannelContext;
-    /**
-     * @var DefinitionInstanceRegistry
-     */
-    private $definitionInstanceRegistry;
-    /**
-     * @var SystemConfigService
-     */
-    private $systemConfigService;
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
-    /**
-     * @var AbstractSalutationRoute
-     */
-    private $salutationRoute;
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-    /*
-     * @var AbstractTranslator
-     */
-    private $translator;
-    /**
-     * @var NumberRangeValueGeneratorInterface
-     */
-    private $numberRangeValueGenerator;
+    private Context $context;
+    private ?SalesChannelContext $salesChannelContext = null;
+    private DefinitionInstanceRegistry $definitionInstanceRegistry;
+    private SystemConfigService $systemConfigService;
+    private RequestStack $requestStack;
+    private AbstractSalutationRoute $salutationRoute;
+    private EventDispatcherInterface $eventDispatcher;
+    private AbstractTranslator $translator;
+    private NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
 
     public function __construct(
         DefinitionInstanceRegistry         $definitionInstanceRegistry,
@@ -217,7 +190,6 @@ class CustomerAccountService
         $sameBoundSalesChannelId = ($customer->getBoundSalesChannelId() === $parent->getBoundSalesChannelId());
         $customerCustomFields = $this->filteredCustomFields($customer->getCustomFields());
         $parentCustomFields = $this->filteredCustomFields($parent->getCustomFields());
-        //$sameCustomFields = !array_diff($customerCustomFields, $parentCustomFields) && !array_diff($parentCustomFields, $customerCustomFields);
         $sameCustomFields = empty(self::arrayMultiDiff($customerCustomFields, $parentCustomFields));
 
         if ($sameGroupId && $sameBoundSalesChannelId && $sameCustomFields) {
