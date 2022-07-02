@@ -9,6 +9,7 @@ use MoorlCustomerAccounts\MoorlCustomerAccounts;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Order\OrderEntity;
+use Shopware\Core\Content\Flow\FlowCollection;
 use Shopware\Core\Framework\Adapter\Translation\AbstractTranslator;
 use Shopware\Core\Framework\App\Validation\Error\MissingPermissionError;
 use Shopware\Core\Framework\Context;
@@ -113,6 +114,18 @@ class CustomerAccountService
     public function getOrderBusinessEvents(): EventActionCollection
     {
         $repo = $this->definitionInstanceRegistry->getRepository('event_action');
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new ContainsFilter('eventName', 'state_enter.order'));
+        $criteria->addSorting(new FieldSorting('eventName', FieldSorting::DESCENDING));
+        $criteria->addGroupField(new FieldGrouping('eventName'));
+
+        return $repo->search($criteria, $this->context)->getEntities();
+    }
+
+    public function getOrderFlows(): FlowCollection
+    {
+        $repo = $this->definitionInstanceRegistry->getRepository('flow');
 
         $criteria = new Criteria();
         $criteria->addFilter(new ContainsFilter('eventName', 'state_enter.order'));

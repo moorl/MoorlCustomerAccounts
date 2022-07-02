@@ -31,8 +31,8 @@
                     </thead>
 
                     <tbody>
-                    {% for orderBusinessEvent in orderBusinessEvents %}
-                        {% set eventName = orderBusinessEvent.eventName|replace({".":"_"}) %}
+                    {% for orderFlow in orderFlows %}
+                        {% set eventName = orderFlow.eventName|replace({".":"_"}) %}
                         {% set eventNameLabel = "moorl-customer-accounts.businessEvents." ~ eventName %}
 
                         <tr>

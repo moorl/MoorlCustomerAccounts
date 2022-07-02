@@ -3,6 +3,7 @@
 namespace MoorlCustomerAccounts\Subscriber;
 
 use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
+use Shopware\Core\Content\Flow\Events\FlowSendMailActionEvent;
 use Shopware\Core\Content\MailTemplate\Event\MailSendSubscriberBridgeEvent;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -21,18 +22,19 @@ class MailSendSubscriber implements EventSubscriberInterface
     public static function getSubscribedEvents(): array
     {
         return [
-            MailSendSubscriberBridgeEvent::class => 'onMailSendSubscriberBridge'
+            MailSendSubscriberBridgeEvent::class => 'onMailSendSubscriberBridge',
+            FlowSendMailActionEvent::class => 'onFlowSendMailActionEvent',
         ];
     }
 
-    public function onMailSendSubscriberBridge(MailSendSubscriberBridgeEvent $event): void
+    public function onFlowSendMailActionEvent(FlowSendMailActionEvent $event): void
     {
-        $orderBusinessEvents = $this->customerAccountService->getOrderBusinessEvents();
+        $orderFlows = $this->customerAccountService->getOrderFlows();
 
-        foreach ($orderBusinessEvents as $orderBusinessEvent) {
-            if ($event->getBusinessEvent()->getEvent()->getName() === $orderBusinessEvent->getEventName()) {
+        foreach ($orderFlows as $orderFlow) {
+            if ($event->getFlowEvent()->getEvent()->getName() === $orderFlow->getEventName()) {
                 try {
-                    $eventName = str_replace(".", "_", $orderBusinessEvent->getEventName());
+                    $eventName = str_replace(".", "_", $orderFlow->getEventName());
                     $customer = $event->getBusinessEvent()->getEvent()->getOrder()->getOrderCustomer()->getCustomer();
                     $emailAddresses = $customer->getCustomFields()['moorl_ca_email'][$eventName];
                     if (empty($emailAddresses)) {
@@ -50,7 +52,37 @@ class MailSendSubscriber implements EventSubscriberInterface
                     $recipients[$emailAddress] = $emailAddress;
                 }
 
-                $event->getDataBag()->set('recipients',$recipients);
+                $event->getDataBag()->set('recipients', $recipients);
+            }
+        }
+    }
+
+    public function onMailSendSubscriberBridge(MailSendSubscriberBridgeEvent $event): void
+    {
+        $orderFlows = $this->customerAccountService->getOrderBusinessEvents();
+
+        foreach ($orderFlows as $orderFlow) {
+            if ($event->getBusinessEvent()->getEvent()->getName() === $orderFlow->getEventName()) {
+                try {
+                    $eventName = str_replace(".", "_", $orderFlow->getEventName());
+                    $customer = $event->getBusinessEvent()->getEvent()->getOrder()->getOrderCustomer()->getCustomer();
+                    $emailAddresses = $customer->getCustomFields()['moorl_ca_email'][$eventName];
+                    if (empty($emailAddresses)) {
+                        return;
+                    }
+                } catch (\Exception $exception) {
+                    return;
+                }
+
+                $emailAddresses = explode(";", $emailAddresses);
+                $emailAddresses = array_map('trim', $emailAddresses);
+
+                $recipients = [];
+                foreach ($emailAddresses as $emailAddress) {
+                    $recipients[$emailAddress] = $emailAddress;
+                }
+
+                $event->getDataBag()->set('recipients', $recipients);
             }
         }
     }

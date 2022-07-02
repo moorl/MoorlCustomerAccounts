@@ -77,7 +77,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
     public function profileNotificationSettings(Request $request, SalesChannelContext $context): Response
     {
         $this->customerAccountService->setSalesChannelContext($context);
-        $orderBusinessEvents = $this->customerAccountService->getOrderBusinessEvents();
+        $orderFlows = $this->customerAccountService->getOrderFlows();
 
         if ($action = $request->request->get('action')) {
             try {
@@ -96,7 +96,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
 
         return $this->renderStorefront('@Storefront/storefront/page/account/notification-settings/index.html.twig', [
             'page' => $page,
-            'orderBusinessEvents' => $orderBusinessEvents
+            'orderFlows' => $orderFlows
         ]);
     }
 

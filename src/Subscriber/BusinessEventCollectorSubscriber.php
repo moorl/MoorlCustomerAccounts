@@ -9,10 +9,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class BusinessEventCollectorSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var BusinessEventCollector
-     */
-    private $businessEventCollector;
+    private BusinessEventCollector $businessEventCollector;
 
     public function __construct(
         BusinessEventCollector $businessEventCollector
