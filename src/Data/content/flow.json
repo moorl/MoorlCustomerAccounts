@@ -1,0 +1,23 @@
+[
+  {
+    "id": "{ID:FLOW_MOORL_CA_INITIAL_PW}",
+    "name": "Customer Accounts Initial Password",
+    "eventName": "moorl_ca_initial_password.send",
+    "priority": 1,
+    "active": true,
+    "sequences": [
+      {
+        "id": "{ID:FLOW_MOORL_CA_INITIAL_PW_1}",
+        "actionName": "action.mail.send",
+        "config": {
+          "recipient": {
+            "data": [],
+            "type": "default"
+          },
+          "mailTemplateId": "{ID:MOORL_CA_INITIAL_PW}",
+          "mailTemplateTypeId": "{ID:MOORL_CA}"
+        }
+      }
+    ]
+  }
+]

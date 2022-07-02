@@ -26,7 +26,9 @@ class MoorlCustomerAccounts extends Plugin
         'mail_template',
         'mail_template_translation',
         'event_action',
-        'custom_field_set'
+        'custom_field_set',
+        'flow',
+        'flow_sequence',
     ];
     public const INHERITANCES = [];
 

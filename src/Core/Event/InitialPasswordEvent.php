@@ -4,6 +4,7 @@ namespace MoorlCustomerAccounts\Core\Event;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Event\CustomerAware;
 use Shopware\Core\Framework\Event\EventData\EntityType;
 use Shopware\Core\Framework\Event\EventData\EventDataCollection;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
@@ -14,7 +15,7 @@ use Shopware\Core\Framework\Event\SalesChannelAware;
 use Symfony\Contracts\EventDispatcher\Event;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 
-class InitialPasswordEvent extends Event implements MailActionInterface, MailAware, SalesChannelAware
+class InitialPasswordEvent extends Event implements CustomerAware, MailAware, SalesChannelAware
 {
     public const EVENT_NAME = 'moorl_ca_initial_password.send';
 
@@ -98,5 +99,10 @@ class InitialPasswordEvent extends Event implements MailActionInterface, MailAwa
     public function getCustomer(): CustomerEntity
     {
         return $this->customer;
+    }
+
+    public function getCustomerId(): string
+    {
+        return $this->getCustomer()->getId();
     }
 }
