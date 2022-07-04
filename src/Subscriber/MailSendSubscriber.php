@@ -30,12 +30,11 @@ class MailSendSubscriber implements EventSubscriberInterface
     public function onFlowSendMailActionEvent(FlowSendMailActionEvent $event): void
     {
         $orderFlows = $this->customerAccountService->getOrderFlows();
-
         foreach ($orderFlows as $orderFlow) {
             if ($event->getFlowEvent()->getEvent()->getName() === $orderFlow->getEventName()) {
                 try {
                     $eventName = str_replace(".", "_", $orderFlow->getEventName());
-                    $customer = $event->getBusinessEvent()->getEvent()->getOrder()->getOrderCustomer()->getCustomer();
+                    $customer = $event->getFlowEvent()->getEvent()->getOrder()->getOrderCustomer()->getCustomer();
                     $emailAddresses = $customer->getCustomFields()['moorl_ca_email'][$eventName];
                     if (empty($emailAddresses)) {
                         return;
