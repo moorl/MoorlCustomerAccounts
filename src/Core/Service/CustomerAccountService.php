@@ -2,7 +2,6 @@
 
 namespace MoorlCustomerAccounts\Core\Service;
 
-use Doctrine\DBAL\Connection;
 use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Event\InitialPasswordEvent;
 use MoorlCustomerAccounts\MoorlCustomerAccounts;
@@ -32,7 +31,6 @@ use Shopware\Core\System\Salutation\SalutationEntity;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class CustomerAccountService
@@ -204,15 +202,26 @@ class CustomerAccountService
         $customerCustomFields = $this->filteredCustomFields($customer->getCustomFields());
         $parentCustomFields = $this->filteredCustomFields($parent->getCustomFields());
         $sameCustomFields = empty(self::arrayMultiDiff($customerCustomFields, $parentCustomFields));
+        $sameDefaultBillingAddressId = ($customer->getDefaultBillingAddressId() === $parent->getDefaultBillingAddressId());
+        $sameDefaultShippingAddressId = ($customer->getDefaultShippingAddressId() === $parent->getDefaultShippingAddressId());
+        $sameDefaultPaymentMethodId = ($customer->getDefaultPaymentMethodId() === $parent->getDefaultPaymentMethodId());
 
-        if ($sameGroupId && $sameBoundSalesChannelId && $sameCustomFields) {
+        if (
+            $sameGroupId &&
+            $sameBoundSalesChannelId &&
+            $sameCustomFields &&
+            $sameDefaultBillingAddressId &&
+            $sameDefaultShippingAddressId &&
+            $sameDefaultPaymentMethodId
+        ) {
             return;
         }
 
         $data = [
             'id' => $customer->getId(),
             'defaultBillingAddressId' => $parent->getDefaultBillingAddressId(),
-            'defaultShippingAddressId' => $parent->getDefaultShippingAddressId()
+            'defaultShippingAddressId' => $parent->getDefaultShippingAddressId(),
+            'defaultPaymentMethodId' => $parent->getDefaultPaymentMethodId(),
         ];
 
         if (!$sameGroupId && $this->systemConfigService->get('MoorlCustomerAccounts.config.inheritGroup')) {

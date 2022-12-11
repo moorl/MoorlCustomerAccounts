@@ -2,19 +2,12 @@
 
 namespace MoorlCustomerAccounts\Subscriber;
 
-use Composer\IO\NullIO;
-use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\FetchMode;
-use Doctrine\DBAL\ParameterType;
 use MoorlCustomerAccounts\Core\Content\CustomerAccountStruct;
 use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
 use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
 use Shopware\Core\Checkout\Customer\Event\CustomerLoginEvent;
 use Shopware\Core\Framework\Routing\Event\SalesChannelContextResolvedEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 class StorefrontSubscriber implements EventSubscriberInterface
 {
@@ -87,6 +80,8 @@ class StorefrontSubscriber implements EventSubscriberInterface
         }
 
         $customer->addExtension('CustomerAccount', $customerAccount);
+
+        //dd($customer);
     }
 
     public function onCustomerLogin(CustomerLoginEvent $event): void

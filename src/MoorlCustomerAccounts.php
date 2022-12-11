@@ -82,14 +82,14 @@ class MoorlCustomerAccounts extends Plugin
             $sql = sprintf("SET FOREIGN_KEY_CHECKS=0; DELETE FROM `%s` WHERE `created_at` = '%s';", $table, self::DATA_CREATED_AT);
 
             try {
-                $connection->executeUpdate($sql);
+                $connection->executeStatement($sql);
             } catch (\Exception $exception) {
                 continue;
             }
         }
 
         try {
-            $connection->executeUpdate('ALTER TABLE `product` DROP COLUMN `forms`');
+            $connection->executeStatement('ALTER TABLE `product` DROP COLUMN `forms`');
         } catch (\Exception $exception) {
         }
     }
@@ -100,7 +100,7 @@ class MoorlCustomerAccounts extends Plugin
 
         foreach (self::PLUGIN_TABLES as $table) {
             $sql = sprintf('SET FOREIGN_KEY_CHECKS=0; DROP TABLE IF EXISTS `%s`;', $table);
-            $connection->executeUpdate($sql);
+            $connection->executeStatement($sql);
         }
     }
 
