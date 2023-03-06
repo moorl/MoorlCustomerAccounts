@@ -10,13 +10,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MailSendSubscriber implements EventSubscriberInterface
 {
-    private CustomerAccountService $customerAccountService;
-
-    public function __construct(
-        CustomerAccountService $customerAccountService
-    )
+    public function __construct(private readonly CustomerAccountService $customerAccountService)
     {
-        $this->customerAccountService = $customerAccountService;
     }
 
     public static function getSubscribedEvents(): array
@@ -39,11 +34,11 @@ class MailSendSubscriber implements EventSubscriberInterface
                     if (empty($emailAddresses)) {
                         return;
                     }
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     return;
                 }
 
-                $emailAddresses = explode(";", $emailAddresses);
+                $emailAddresses = explode(";", (string) $emailAddresses);
                 $emailAddresses = array_map('trim', $emailAddresses);
 
                 $recipients = [];
@@ -63,17 +58,17 @@ class MailSendSubscriber implements EventSubscriberInterface
         foreach ($orderFlows as $orderFlow) {
             if ($event->getBusinessEvent()->getEvent()->getName() === $orderFlow->getEventName()) {
                 try {
-                    $eventName = str_replace(".", "_", $orderFlow->getEventName());
+                    $eventName = str_replace(".", "_", (string) $orderFlow->getEventName());
                     $customer = $event->getBusinessEvent()->getEvent()->getOrder()->getOrderCustomer()->getCustomer();
                     $emailAddresses = $customer->getCustomFields()['moorl_ca_email'][$eventName];
                     if (empty($emailAddresses)) {
                         return;
                     }
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     return;
                 }
 
-                $emailAddresses = explode(";", $emailAddresses);
+                $emailAddresses = explode(";", (string) $emailAddresses);
                 $emailAddresses = array_map('trim', $emailAddresses);
 
                 $recipients = [];

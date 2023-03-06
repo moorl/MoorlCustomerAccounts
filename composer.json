@@ -1,7 +1,7 @@
 {
     "name": "moorl/customer-accounts",
     "description": "Customer Accounts for Shopware 6",
-    "version": "1.4.13",
+    "version": "1.5.0",
     "license": "proprietary",
     "authors": [
         {
@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "shopware/core": "^6.4.14",
-        "moorl/foundation": "1.4.*"
+        "shopware/core": "^6.5.0",
+        "moorl/foundation": "1.5.*"
     },
     "type": "shopware-platform-plugin",
     "autoload": {
@@ -22,12 +22,12 @@
         "shopware-plugin-class": "MoorlCustomerAccounts\\MoorlCustomerAccounts",
         "copyright": "(c) by moori",
         "label": {
-            "de-DE": "Kunden Zugangsverwaltung für Shopware 6",
-            "en-GB": "Customer access management for Shopware 6"
+            "de-DE": "Kunden Zugangsverwaltung",
+            "en-GB": "Customer access management"
         },
         "description": {
-            "de-DE": "Kunden Zugangsverwaltung für Shopware 6",
-            "en-GB": "Customer access management for Shopware 6"
+            "de-DE": "Kunden Zugangsverwaltung",
+            "en-GB": "Customer access management"
         },
         "manufacturerLink": {
             "de-DE": "https://docs.moori.net/",

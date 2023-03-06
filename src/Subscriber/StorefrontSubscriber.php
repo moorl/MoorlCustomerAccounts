@@ -11,13 +11,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StorefrontSubscriber implements EventSubscriberInterface
 {
-    private CustomerAccountService $customerAccountService;
-
-    public function __construct(
-        CustomerAccountService $customerAccountService
-    )
+    public function __construct(private readonly CustomerAccountService $customerAccountService)
     {
-        $this->customerAccountService = $customerAccountService;
     }
 
     public static function getSubscribedEvents(): array

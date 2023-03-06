@@ -37,32 +37,17 @@ class CustomerAccountService
 {
     private Context $context;
     private ?SalesChannelContext $salesChannelContext = null;
-    private DefinitionInstanceRegistry $definitionInstanceRegistry;
-    private SystemConfigService $systemConfigService;
-    private RequestStack $requestStack;
-    private AbstractSalutationRoute $salutationRoute;
-    private EventDispatcherInterface $eventDispatcher;
-    private AbstractTranslator $translator;
-    private NumberRangeValueGeneratorInterface $numberRangeValueGenerator;
 
     public function __construct(
-        DefinitionInstanceRegistry         $definitionInstanceRegistry,
-        SystemConfigService                $systemConfigService,
-        RequestStack                       $requestStack,
-        AbstractSalutationRoute            $salutationRoute,
-        EventDispatcherInterface           $eventDispatcher,
-        AbstractTranslator                 $translator,
-        NumberRangeValueGeneratorInterface $numberRangeValueGenerator
+        private readonly DefinitionInstanceRegistry         $definitionInstanceRegistry,
+        private readonly SystemConfigService                $systemConfigService,
+        private readonly RequestStack                       $requestStack,
+        private readonly AbstractSalutationRoute            $salutationRoute,
+        private readonly EventDispatcherInterface           $eventDispatcher,
+        private readonly AbstractTranslator                 $translator,
+        private readonly NumberRangeValueGeneratorInterface $numberRangeValueGenerator
     )
     {
-        $this->definitionInstanceRegistry = $definitionInstanceRegistry;
-        $this->systemConfigService = $systemConfigService;
-        $this->requestStack = $requestStack;
-        $this->salutationRoute = $salutationRoute;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->translator = $translator;
-        $this->numberRangeValueGenerator = $numberRangeValueGenerator;
-
         $this->context = Context::createDefaultContext();
     }
 
@@ -388,40 +373,26 @@ class CustomerAccountService
     {
         $salutations = $this->salutationRoute->load(new Request(), $this->getSalesChannelContext(), new Criteria())->getSalutations();
 
-        $salutations->sort(function (SalutationEntity $a, SalutationEntity $b) {
-            return $b->getSalutationKey() <=> $a->getSalutationKey();
-        });
+        $salutations->sort(fn(SalutationEntity $a, SalutationEntity $b) => $b->getSalutationKey() <=> $a->getSalutationKey());
 
         return $salutations;
     }
 
-    /**
-     * @return Context
-     */
     public function getContext(): Context
     {
         return $this->context;
     }
 
-    /**
-     * @param Context $context
-     */
     public function setContext(Context $context): void
     {
         $this->context = $context;
     }
 
-    /**
-     * @return SalesChannelContext|null
-     */
     public function getSalesChannelContext(): ?SalesChannelContext
     {
         return $this->salesChannelContext;
     }
 
-    /**
-     * @param SalesChannelContext|null $salesChannelContext
-     */
     public function setSalesChannelContext(?SalesChannelContext $salesChannelContext): void
     {
         $this->salesChannelContext = $salesChannelContext;

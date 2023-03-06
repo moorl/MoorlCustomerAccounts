@@ -1,7 +1,5 @@
 <form action="{{ seoUrl('moorl-customer-accounts.account.customer-accounts.page') }}"
       method="post">
-    {{ sw_csrf('moorl-customer-accounts.account.customer-accounts.page') }}
-
     <input type="hidden" name="customerId" value="{{ customer.id }}">
 
     <div class="form-group">
@@ -27,15 +25,12 @@
     <div class="form-group">
         <label class="" for="salutationId">{{ "account.personalSalutationLabel"|trans|sw_sanitize }}</label>
         <select id="salutationId"
-                class="custom-select"
+                class="form-select"
                 name="salutationId"
                 id="salutationId"
                 required="required">
             {% for salutation in salutations %}
-                <option {% if salutation.id == customer.salutationId %}
-                    selected="selected"
-                {% endif %}
-                        value="{{ salutation.id }}">
+                <option {% if salutation.id == customer.salutationId %}selected="selected"{% endif %} value="{{ salutation.id }}">
                     {{ salutation.translated.displayName }}
                 </option>
             {% endfor %}

@@ -9,7 +9,6 @@ use Shopware\Core\Framework\Event\EventData\EntityType;
 use Shopware\Core\Framework\Event\EventData\EventDataCollection;
 use Shopware\Core\Framework\Event\EventData\MailRecipientStruct;
 use Shopware\Core\Framework\Event\EventData\ScalarValueType;
-use Shopware\Core\Framework\Event\MailActionInterface;
 use Shopware\Core\Framework\Event\MailAware;
 use Shopware\Core\Framework\Event\SalesChannelAware;
 use Symfony\Contracts\EventDispatcher\Event;
@@ -17,30 +16,10 @@ use Shopware\Core\Checkout\Customer\CustomerEntity;
 
 class InitialPasswordEvent extends Event implements CustomerAware, MailAware, SalesChannelAware
 {
-    public const EVENT_NAME = 'moorl_ca_initial_password.send';
+    final public const EVENT_NAME = 'moorl_ca_initial_password.send';
 
-    private Context $context;
-    private string $salesChannelId;
-    private MailRecipientStruct $recipients;
-    private CustomerEntity $customer;
-    private CustomerEntity $parent;
-    private string $password;
-
-    public function __construct(
-        Context $context,
-        string $salesChannelId,
-        MailRecipientStruct $recipients,
-        CustomerEntity $customer,
-        CustomerEntity $parent,
-        string $password
-    )
+    public function __construct(private readonly Context $context, private readonly string $salesChannelId, private readonly MailRecipientStruct $recipients, private readonly CustomerEntity $customer, private readonly CustomerEntity $parent, private readonly string $password)
     {
-        $this->context = $context;
-        $this->salesChannelId = $salesChannelId;
-        $this->recipients = $recipients;
-        $this->customer = $customer;
-        $this->parent = $parent;
-        $this->password = $password;
     }
 
     public static function getAvailableData(): EventDataCollection
@@ -51,17 +30,11 @@ class InitialPasswordEvent extends Event implements CustomerAware, MailAware, Sa
             ->add('parent', new EntityType(CustomerDefinition::class));
     }
 
-    /**
-     * @return string
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
-    /**
-     * @return CustomerEntity|null
-     */
     public function getParent(): ?CustomerEntity
     {
         return $this->parent;
@@ -93,9 +66,6 @@ class InitialPasswordEvent extends Event implements CustomerAware, MailAware, Sa
         return $this->salesChannelId;
     }
 
-    /**
-     * @return CustomerEntity
-     */
     public function getCustomer(): CustomerEntity
     {
         return $this->customer;

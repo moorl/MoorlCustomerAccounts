@@ -3,42 +3,23 @@
 namespace MoorlCustomerAccounts\Controller;
 
 use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
-use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Storefront\Page\Account\Profile\AccountProfilePageLoader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"storefront"}})
- */
+#[Route(defaults: ['_routeScope' => ['storefront']])]
 class StorefrontController extends \Shopware\Storefront\Controller\StorefrontController
 {
-    /**
-     * @var CustomerAccountService
-     */
-    private $customerAccountService;
-
-    /**
-     * @var AccountProfilePageLoader
-     */
-    private $profilePageLoader;
-
     public function __construct(
-        CustomerAccountService $customerAccountService,
-        AccountProfilePageLoader $profilePageLoader
+        private readonly CustomerAccountService $customerAccountService,
+        private readonly AccountProfilePageLoader $profilePageLoader
     )
     {
-        $this->customerAccountService = $customerAccountService;
-        $this->profilePageLoader = $profilePageLoader;
     }
 
-    /**
-     * @Route("/account/customer-accounts", name="moorl-customer-accounts.account.customer-accounts.page", methods={"GET","POST"})
-     * @LoginRequired()
-     */
+    #[Route(path: '/account/customer-accounts', name: 'moorl-customer-accounts.account.customer-accounts.page', methods: ['GET', 'POST'], defaults: ['_loginRequired' => true])]
     public function profileCustomerAccounts(Request $request, SalesChannelContext $context): Response
     {
         $this->customerAccountService->setSalesChannelContext($context);
@@ -70,10 +51,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
         ]);
     }
 
-    /**
-     * @Route("/account/notification-settings", name="moorl-customer-accounts.account.notification-settings.page", methods={"GET","POST"})
-     * @LoginRequired()
-     */
+    #[Route(path: '/account/notification-settings', name: 'moorl-customer-accounts.account.notification-settings.page', methods: ['GET', 'POST'], defaults: ['_loginRequired' => true])]
     public function profileNotificationSettings(Request $request, SalesChannelContext $context): Response
     {
         $this->customerAccountService->setSalesChannelContext($context);
@@ -82,7 +60,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
         if ($action = $request->request->get('action')) {
             try {
                 if ($action == 'edit') {
-                    $this->customerAccountService->saveNotificationSettings($request->request->get('moorl_ca_email'));
+                    $this->customerAccountService->saveNotificationSettings($request->request->all('moorl_ca_email'));
                     $this->addFlash('success', $this->trans('moorl-customer-accounts.settingsSaved'));
                 } else {
                     throw new \Exception('Something went wrong');
@@ -100,10 +78,7 @@ class StorefrontController extends \Shopware\Storefront\Controller\StorefrontCon
         ]);
     }
 
-    /**
-     * @Route("/account/edit/{customerId}", name="moorl-customer-accounts.account.customer-accounts.edit", methods={"GET"}, defaults={"customerId"=null,"XmlHttpRequest"=true})
-     * @LoginRequired()
-     */
+    #[Route(path: '/account/edit/{customerId}', name: 'moorl-customer-accounts.account.customer-accounts.edit', methods: ['GET'], defaults: ['customerId' => null, 'XmlHttpRequest' => true, '_loginRequired' => true])]
     public function editCustomerModal(?string $customerId, Request $request, SalesChannelContext $context): Response
     {
         $this->customerAccountService->setSalesChannelContext($context);
