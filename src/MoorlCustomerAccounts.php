@@ -25,10 +25,8 @@ class MoorlCustomerAccounts extends Plugin
         'flow_sequence',
     ];
     final public const INHERITANCES = [];
-
     final public const EVENT_NAME = 'moorl_ca_initial_password.send';
     final public const TECHNICAL_NAME = 'moorl_ca_initial_password';
-
     final public const PLUGIN_CUSTOM_FIELDS = [
         'moorl_ca_parent_id',
         'moorl_ca_customer_id',
@@ -80,11 +78,6 @@ class MoorlCustomerAccounts extends Plugin
             } catch (\Exception) {
                 continue;
             }
-        }
-
-        try {
-            $connection->executeStatement('ALTER TABLE `product` DROP COLUMN `forms`');
-        } catch (\Exception) {
         }
     }
 

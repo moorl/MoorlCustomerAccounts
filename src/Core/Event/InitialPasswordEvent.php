@@ -50,17 +50,11 @@ class InitialPasswordEvent extends Event implements CustomerAware, MailAware, Sa
         return $this->recipients;
     }
 
-    /**
-     * @return Context
-     */
     public function getContext(): Context
     {
         return $this->context;
     }
 
-    /**
-     * @return string
-     */
     public function getSalesChannelId(): string
     {
         return $this->salesChannelId;
