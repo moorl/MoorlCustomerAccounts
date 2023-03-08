@@ -28,7 +28,9 @@ class StorefrontSubscriber implements EventSubscriberInterface
             CustomerLoginEvent::class => 'onCustomerLogin',
             SalesChannelContextResolvedEvent::class => 'onSalesChannelContextResolved',
             CheckoutOrderPlacedEvent::class => 'onOrderPlaced',
-            'sales_channel.product.process.criteria' => 'onProductCriteria'
+            'sales_channel.product.process.criteria' => [
+                ['onProductCriteria', 10],
+            ]
         ];
     }
 

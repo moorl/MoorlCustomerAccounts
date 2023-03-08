@@ -32,7 +32,7 @@
         <service id="MoorlCustomerAccounts\Subscriber\StorefrontSubscriber">
             <argument type="service" id="MoorlCustomerAccounts\Core\Service\CustomerAccountService"/>
 
-            <tag name="kernel.event_subscriber" priority="-9999"/>
+            <tag name="kernel.event_subscriber"/>
         </service>
 
         <service id="MoorlCustomerAccounts\Subscriber\MailSendSubscriber">
