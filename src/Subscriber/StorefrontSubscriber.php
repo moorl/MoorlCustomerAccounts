@@ -7,6 +7,8 @@ use MoorlCustomerAccounts\Core\Service\CustomerAccountService;
 use Shopware\Core\Checkout\Cart\Event\CheckoutOrderPlacedEvent;
 use Shopware\Core\Checkout\Customer\Event\CustomerLoginEvent;
 use Shopware\Core\Framework\Routing\Event\SalesChannelContextResolvedEvent;
+use Shopware\Core\System\SalesChannel\Event\SalesChannelProcessCriteriaEvent;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class StorefrontSubscriber implements EventSubscriberInterface
@@ -20,8 +22,21 @@ class StorefrontSubscriber implements EventSubscriberInterface
         return [
             CustomerLoginEvent::class => 'onCustomerLogin',
             SalesChannelContextResolvedEvent::class => 'onSalesChannelContextResolved',
-            CheckoutOrderPlacedEvent::class => 'onOrderPlaced'
+            CheckoutOrderPlacedEvent::class => 'onOrderPlaced',
+            'sales_channel.product.process.criteria' => [
+                ['onProductCriteria', 10],
+            ]
         ];
+    }
+
+    public function onProductCriteria(SalesChannelProcessCriteriaEvent $event): void
+    {
+        $this->enrichCustomer($event->getSalesChannelContext());
+    }
+
+    public function onSalesChannelContextResolved(SalesChannelContextResolvedEvent $event): void
+    {
+        $this->enrichCustomer($event->getSalesChannelContext());
     }
 
     public function onOrderPlaced(CheckoutOrderPlacedEvent $event): void
@@ -48,16 +63,19 @@ class StorefrontSubscriber implements EventSubscriberInterface
         }
     }
 
-    public function onSalesChannelContextResolved(SalesChannelContextResolvedEvent $event): void
+    public function onCustomerLogin(CustomerLoginEvent $event): void
     {
-        $salesChannelContext = $event->getSalesChannelContext();
-        $customer = $salesChannelContext->getCustomer();
+        // TODO: If parent removed, throw error
+    }
 
-        if (!$customer) {
+    private function enrichCustomer(SalesChannelContext $salesChannelContext): void
+    {
+        $customer = $salesChannelContext->getCustomer();
+        if (!$customer || $customer->hasExtension('CustomerAccount')) {
             return;
         }
 
-        $this->customerAccountService->setSalesChannelContext($event->getSalesChannelContext());
+        $this->customerAccountService->setSalesChannelContext($salesChannelContext);
 
         $customerAccount = new CustomerAccountStruct();
         $customFields = $customer->getCustomFields();
@@ -75,12 +93,5 @@ class StorefrontSubscriber implements EventSubscriberInterface
         }
 
         $customer->addExtension('CustomerAccount', $customerAccount);
-
-        //dd($customer);
-    }
-
-    public function onCustomerLogin(CustomerLoginEvent $event): void
-    {
-        // TODO: If parent removed, throw error
     }
 }
