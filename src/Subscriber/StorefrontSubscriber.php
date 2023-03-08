@@ -56,9 +56,9 @@ class StorefrontSubscriber implements EventSubscriberInterface
         if ($customerAccount && $customerAccount->getOrderCopy()) {
             $email = $customerAccount->getParent()->getEmail();
 
-            $recipents = $event->getMailStruct()->getRecipients();
-            $recipents[$email] = $email;
-            $event->getMailStruct()->setRecipients($recipents);
+            $recipients = $event->getMailStruct()->getRecipients();
+            $recipients[$email] = $email;
+            $event->getMailStruct()->setRecipients($recipients);
             $event->getMailStruct()->setCc($email); // Not working for the moment
         }
     }
