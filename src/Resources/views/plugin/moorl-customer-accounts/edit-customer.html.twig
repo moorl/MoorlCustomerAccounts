@@ -13,9 +13,7 @@
                 <input type="text" class="form-control" id="customerNumber" value="{{ context.customer.customerNumber }}" readonly>
             {% else %}
                 <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">{{ context.customer.customerNumber }}</span>
-                    </div>
+                    <span class="input-group-text">{{ context.customer.customerNumber }}</span>
                     <input type="number" class="form-control" name="customerNumber" id="customerNumber" value="">
                 </div>
             {% endif %}
