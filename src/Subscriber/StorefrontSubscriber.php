@@ -87,9 +87,11 @@ class StorefrontSubscriber implements EventSubscriberInterface
 
             $customerAccount->setParent($parent);
             $customerAccount->setOrderCopy(!empty($customFields['moorl_ca_order_copy']));
+            $customerAccount->setId($customer->getId());
             $customer->setId($parent->getId());
         } else {
             $customerAccount->setChildren($this->customerAccountService->getCustomers());
+            $customerAccount->setId($customer->getId());
         }
 
         $customer->addExtension('CustomerAccount', $customerAccount);

@@ -8,18 +8,20 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class CustomerAccountStruct extends Struct
 {
-    /**
-     * @var CustomerEntity|null
-     */
-    protected $parent;
-    /**
-     * @var CustomerCollection|null
-     */
-    protected $children;
-    /**
-     * @var bool|null
-     */
-    protected $orderCopy;
+    protected ?CustomerEntity $parent = null;
+    protected ?CustomerCollection $children = null;
+    protected ?bool $orderCopy = false;
+    protected ?string $id = null;
+
+    public function getId(): ?string
+    {
+        return $this->id;
+    }
+
+    public function setId(?string $id): void
+    {
+        $this->id = $id;
+    }
 
     public function getOrderCopy(): ?bool
     {

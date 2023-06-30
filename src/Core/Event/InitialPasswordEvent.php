@@ -14,11 +14,18 @@ use Shopware\Core\Framework\Event\SalesChannelAware;
 use Symfony\Contracts\EventDispatcher\Event;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 
-class InitialPasswordEvent extends Event implements CustomerAware, MailAware, SalesChannelAware
+class InitialPasswordEvent extends Event implements CustomerAware, ParentAware, PasswordAware, MailAware, SalesChannelAware
 {
     final public const EVENT_NAME = 'moorl_ca_initial_password.send';
 
-    public function __construct(private readonly Context $context, private readonly string $salesChannelId, private readonly MailRecipientStruct $recipients, private readonly CustomerEntity $customer, private readonly CustomerEntity $parent, private readonly string $password)
+    public function __construct(
+        private readonly Context $context,
+        private readonly string $salesChannelId,
+        private readonly MailRecipientStruct $recipients,
+        private readonly CustomerEntity $customer,
+        private readonly CustomerEntity $parent,
+        private readonly string $password
+    )
     {
     }
 

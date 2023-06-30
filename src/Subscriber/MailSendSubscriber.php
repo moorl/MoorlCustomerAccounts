@@ -24,6 +24,8 @@ class MailSendSubscriber implements EventSubscriberInterface
 
     public function onFlowSendMailActionEvent(FlowSendMailActionEvent $event): void
     {
+        return;
+
         $orderFlows = $this->customerAccountService->getOrderFlows();
         foreach ($orderFlows as $orderFlow) {
             if ($event->getFlowEvent()->getEvent()->getName() === $orderFlow->getEventName()) {
@@ -53,6 +55,8 @@ class MailSendSubscriber implements EventSubscriberInterface
 
     public function onMailSendSubscriberBridge(MailSendSubscriberBridgeEvent $event): void
     {
+        return;
+
         $orderFlows = $this->customerAccountService->getOrderBusinessEvents();
 
         foreach ($orderFlows as $orderFlow) {

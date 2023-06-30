@@ -344,7 +344,8 @@ class CustomerAccountService
                 new MailRecipientStruct([$customer->getEmail() => $customer->getFirstName() . ' ' . $customer->getLastName()]),
                 $customer,
                 $parent,
-                $password
+                $password,
+                $parent
             );
 
             $this->eventDispatcher->dispatch(
