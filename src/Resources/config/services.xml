@@ -49,5 +49,13 @@
 
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <!-- In some cases the customer parent is logged in after context change -->
+        <service id="MoorlCustomerAccounts\Core\Content\ContextSwitchRouteDecorator"
+                 decorates="Shopware\Core\System\SalesChannel\SalesChannel\ContextSwitchRoute"
+                 decoration-priority="-9999"
+                 public="true">
+            <argument type="service" id="MoorlCustomerAccounts\Core\Content\ContextSwitchRouteDecorator.inner"/>
+        </service>
     </services>
 </container>
