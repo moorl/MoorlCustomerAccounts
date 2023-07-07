@@ -3,6 +3,7 @@
 namespace MoorlCustomerAccounts\Core\Event;
 
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Content\Flow\Dispatching\Aware\ScalarValuesAware;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\CustomerAware;
 use Shopware\Core\Framework\Event\EventData\EntityType;
@@ -14,7 +15,7 @@ use Shopware\Core\Framework\Event\SalesChannelAware;
 use Symfony\Contracts\EventDispatcher\Event;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 
-class InitialPasswordEvent extends Event implements CustomerAware, ParentAware, PasswordAware, MailAware, SalesChannelAware
+class InitialPasswordEvent extends Event implements ScalarValuesAware, CustomerAware, ParentAware, PasswordAware, MailAware, SalesChannelAware
 {
     final public const EVENT_NAME = 'moorl_ca_initial_password.send';
 
@@ -35,6 +36,11 @@ class InitialPasswordEvent extends Event implements CustomerAware, ParentAware, 
             ->add('password', new ScalarValueType(ScalarValueType::TYPE_STRING))
             ->add('customer', new EntityType(CustomerDefinition::class))
             ->add('parent', new EntityType(CustomerDefinition::class));
+    }
+
+    public function getValues(): array
+    {
+        return [PasswordAware::PASSWORD => $this->getPassword()];
     }
 
     public function getPassword(): string

@@ -57,5 +57,12 @@
                  public="true">
             <argument type="service" id="MoorlCustomerAccounts\Core\Content\ContextSwitchRouteDecorator.inner"/>
         </service>
+
+        <service id="MoorlCustomerAccounts\Core\Event\ParentStorer">
+            <argument type="service" id="customer.repository"/>
+            <argument type="service" id="event_dispatcher"/>
+
+            <tag name="flow.storer"/>
+        </service>
     </services>
 </container>

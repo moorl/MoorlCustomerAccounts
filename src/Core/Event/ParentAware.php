@@ -11,5 +11,7 @@ interface ParentAware extends FlowEventAware
 {
     public const PARENT = 'parent';
 
+    public const PARENT_ID = 'parent_id';
+
     public function getParent(): ?CustomerEntity;
 }
