@@ -22,11 +22,12 @@ class ContextSwitchRouteDecorator extends AbstractContextSwitchRoute
     {
         /* Restore origin customer id before context change (https://account.shopware.com/producer/support/241698) */
         $customer = $context->getCustomer();
-
-        /* @var $customerAccount CustomerAccountStruct */
-        $customerAccount = $customer->getExtension('CustomerAccount');
-        if ($customerAccount && $customerAccount->getParent()) {
-            $customer->setId($customerAccount->getId());
+        if ($customer) {
+            /* @var $customerAccount CustomerAccountStruct */
+            $customerAccount = $customer->getExtension('CustomerAccount');
+            if ($customerAccount && $customerAccount->getParent()) {
+                $customer->setId($customerAccount->getId());
+            }
         }
 
         return $this->decorated->switchContext($data, $context);
