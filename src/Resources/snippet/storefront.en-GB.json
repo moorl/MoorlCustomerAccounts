@@ -58,6 +58,7 @@
             "newsletter_unsubscribe": "Newsletter unsubscribed",
             "newsletter_update": "Newsletter sign-up updated",
             "product_export_log": "Product export executed",
+            "state_enter_order_transaction_state_unconfirmed": "Order Transaction State Unconfirmed",
             "state_enter_order_state_cancelled": "Order enters status cancelled",
             "state_enter_order_state_completed": "Order enters status completed",
             "state_enter_order_state_in_progress": "Order enters status in progress",

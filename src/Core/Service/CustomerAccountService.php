@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Grouping\FieldGrouping;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Event\EventAction\EventActionCollection;
@@ -111,7 +112,11 @@ class CustomerAccountService
         $repo = $this->definitionInstanceRegistry->getRepository('flow');
 
         $criteria = new Criteria();
-        $criteria->addFilter(new ContainsFilter('eventName', 'state_enter.order'));
+
+        $criteria->addFilter(new OrFilter([
+            new EqualsFilter('eventName', 'checkout.order.placed'),
+            new ContainsFilter('eventName', 'state_enter.order')
+        ]));
         $criteria->addSorting(new FieldSorting('eventName', FieldSorting::DESCENDING));
         $criteria->addGroupField(new FieldGrouping('eventName'));
 
