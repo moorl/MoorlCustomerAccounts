@@ -1,10 +1,11 @@
 {% sw_extends '@Storefront/storefront/page/account/sidebar.html.twig' %}
 
 {% block page_account_sidebar_link_profile %}
-    {# Don't allow to edit the parent account #}
-    {% if context.customer.extensions.CustomerAccount.children %}
+    {% if context.customer.extensions.CustomerAccount.parent == null %}
         {{ parent() }}
+    {% endif %}
 
+    {% if context.customer.extensions.CustomerAccount.children %}
         {% block page_account_sidebar_menu_customer_accounts %}
             <a href="{{ seoUrl('moorl-customer-accounts.account.customer-accounts.page') }}"
                title="{{ "moorl-customer-accounts.customerAccounts"|trans|striptags }}"
