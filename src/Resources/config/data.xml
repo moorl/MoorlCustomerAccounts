@@ -7,7 +7,7 @@
     <services>
         <!-- priority > 1000 = run after activation (Plugin Data) -->
         <service id="MoorlCustomerAccounts\Data\Data">
-            <tag name="moorl.foundation.data" priority="2000" />
+            <tag name="moorl.foundation.data" priority="2000"/>
         </service>
 
         <!-- priority <= 1000 = run manually (Demo Data) -->
