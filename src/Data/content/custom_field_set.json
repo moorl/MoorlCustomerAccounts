@@ -23,7 +23,7 @@
         "name": "moorl_ca_order_copy",
         "type": "bool",
         "config": {
-          "componentName": "sw-field",
+          "componentName": "sw-switch-field",
           "customFieldType": "switch",
           "label": {
             "en-GB": "Send copy of orders",
